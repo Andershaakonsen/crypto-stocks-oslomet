@@ -11,6 +11,7 @@ if (!app.Environment.IsDevelopment())
 {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
 app.UseHttpsRedirection();
@@ -23,5 +24,22 @@ app.MapControllerRoute(
     pattern: "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");;
+
+/**
+* If we are in dev mode, init SPA dev server and proxy requests
+* This is added to replace Webpack bundler with Vite which is much more modern and easy to setup. 
+*/
+if (app.Environment.IsDevelopment())
+{   
+    app.UseSpa(spa =>
+    {
+        /* If request is unhandled redirect to Vite server */
+        spa.UseProxyToSpaDevelopmentServer("http://localhost:5173");
+    });
+}
+else
+{
+    app.MapFallbackToFile("index.html");
+}
 
 app.Run();
