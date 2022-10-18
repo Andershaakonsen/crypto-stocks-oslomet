@@ -1,21 +1,31 @@
+import { Observable } from "./lib/Observable";
+
 const HTML = document.documentElement;
 
 export const createDarkMode = (targetElement) => {
-  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const isPersistedDark = localStorage.getItem("dark-mode") === "true";
+  const darkState = new Observable(false);
 
-  if (isDark || isPersistedDark) {
-    HTML.classList.add("dark");
-  }
+  const isWindowDark = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
+
+  const persistedDark = localStorage.getItem("dark-mode");
+
+  const actualDark =
+    persistedDark === null ? isWindowDark : persistedDark === "true";
+
+  darkState.set(actualDark);
+
+  darkState.subscribe((isDark) => {
+    isDark ? HTML.classList.add("dark") : HTML.classList.remove("dark");
+    localStorage.setItem("dark-mode", isDark);
+  });
 
   const handler = () => {
-    HTML.classList.toggle("dark");
-    localStorage.setItem("dark-mode", HTML.classList.contains("dark"));
+    darkState.set(!darkState.value);
   };
 
   targetElement.addEventListener("click", handler);
 
-  return () => {
-    targetElement.removeEventListener("click", handler);
-  };
+  return darkState;
 };
