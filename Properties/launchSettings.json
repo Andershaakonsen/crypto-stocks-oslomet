@@ -11,7 +11,7 @@
     "crypto_stocks": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7254;https://192.168.0.8:7254;http://0.0.0.0:5041",
+      "applicationUrl": "http://0.0.0.0:5001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

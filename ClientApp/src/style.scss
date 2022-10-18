@@ -1,0 +1,45 @@
+@import url("https://css.gg/dollar.css");
+@import url("https://css.gg/moon.css");
+@import url("https://css.gg/sun.css");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-radix-slate1 text-radix-slate12;
+}
+
+#app {
+  display: grid;
+
+  grid-template-areas:
+    "header header header"
+    "left-sidebar main right-sidebar"
+    "footer footer footer";
+
+  grid-template-columns: 1fr 70% 1fr;
+  grid-template-rows: 57px calc(100vh - 57px - 100px) 100px;
+
+  header {
+    grid-area: header;
+  }
+
+  main {
+    grid-area: main;
+  }
+
+  .left-sidebar {
+    grid-area: left-sidebar;
+    @apply border-r border-radix-slate6;
+  }
+
+  .right-sidebar {
+    grid-area: right-sidebar;
+    @apply border-l border-radix-slate6;
+  }
+
+  footer {
+    grid-area: footer;
+    @apply border-t border-radix-slate6;
+  }
+}

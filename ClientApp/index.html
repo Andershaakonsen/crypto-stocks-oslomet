@@ -1,18 +1,33 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
   </head>
-  <body class="dark bg-radix-slate1">
-    <header
-      class="h-14 shadow-md border-b border-radix-slate6 flex items-center px-4"
-    >
-      <i class="gg-dollar"></i> <span class="ml-4">CRYPTO</span>
-    </header>
-    <div id="app"></div>
+  <body class="bg-radix-slate1">
+    <div id="app">
+      <header
+        class="h-14 border-b border-radix-slate6 flex items-center justify-between px-4"
+      >
+        <div class="flex items-center">
+          <i class="gg-dollar"></i> <span class="ml-4">CRYPTO</span>
+        </div>
+        <div class="flex items-center">
+          <button
+            class="bg-radix-slate3 text-radix-slate12 rounded-full px-2 py-2"
+            id="dark-mode-toggle"
+          >
+            <i class="gg-sun"></i>
+          </button>
+        </div>
+      </header>
+      <aside class="left-sidebar"></aside>
+      <aside class="right-sidebar"></aside>
+      <main></main>
+      <footer></footer>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -1,6 +1,15 @@
+using crypto_stocks.Helpers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+{
+    var services = builder.Services;
+    var env = builder.Environment;
+
+    // add db context
+    services.AddDbContext<DataContext>();
+}
 
 builder.Services.AddControllersWithViews();
 
@@ -14,16 +23,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-
-app.MapControllerRoute(
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
-
-app.MapFallbackToFile("index.html");;
+});
 
 /**
 * If we are in dev mode, init SPA dev server and proxy requests
@@ -34,7 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSpa(spa =>
     {
         /* If request is unhandled redirect to Vite server */
-        spa.UseProxyToSpaDevelopmentServer("http://localhost:5173");
+        spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
     });
 }
 else
