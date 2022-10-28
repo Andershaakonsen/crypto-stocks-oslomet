@@ -11,7 +11,7 @@ export async function getListings() {
 }
 
 export async function deposit(amount) {
-    const response = await fetch("/Stocks/Deposit", {
+    const response = await fetch("/api/Stocks/Deposit", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -29,7 +29,7 @@ export async function deposit(amount) {
 }
 
 export async function withdraw(amount) {
-    const response = await fetch("/Stocks/Deposit", {
+    const response = await fetch("/api/Stocks/Deposit", {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
