@@ -1,46 +1,131 @@
-@import url("https://css.gg/dollar.css");
-@import url("https://css.gg/moon.css");
-@import url("https://css.gg/sun.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@import "css.gg/icons/scss/dollar";
+@import "css.gg/icons/scss/moon";
+@import "css.gg/icons/scss/sun";
+@import "css.gg/icons/scss/search";
+@import "css.gg/icons/scss/arrow-down-o";
+@import "css.gg/icons/scss/arrow-up-o";
+
 body {
-  @apply bg-radix-slate1 text-radix-slate12;
+    @apply bg-radix-slate1 text-radix-slate12;
+}
+
+.dark {
+    color-scheme: dark;
 }
 
 #app {
-  --ggs: 0.7;
-  display: grid;
+    --ggs: 0.7;
+    display: grid;
 
-  grid-template-areas:
-    "header header header"
-    "left-sidebar main right-sidebar"
-    "footer footer footer";
+    grid-template-areas:
+        "header header header"
+        "left-sidebar main right-sidebar"
+        "left-sidebar footer right-sidebar";
 
-  grid-template-columns: 1fr 70% 1fr;
-  grid-template-rows: 57px calc(100vh - 57px - 100px) 100px;
+    --sidebar-width: 300px;
+    --footer-width: 175px;
 
-  header {
-    grid-area: header;
-  }
+    grid-template-columns: var(--sidebar-width) 1fr var(--sidebar-width);
+    grid-template-rows: 57px calc(100vh - 57px - var(--footer-width)) var(
+            --footer-width
+        );
 
-  main {
-    grid-area: main;
-  }
+    header {
+        grid-area: header;
+    }
 
-  .left-sidebar {
-    grid-area: left-sidebar;
-    @apply border-r border-radix-slate6;
-  }
+    main {
+        grid-area: main;
+        overflow-y: auto;
+    }
 
-  .right-sidebar {
-    grid-area: right-sidebar;
-    @apply border-l border-radix-slate6;
-  }
+    .left-sidebar {
+        grid-area: left-sidebar;
+        @apply border-r border-radix-slate6 flex flex-col overflow-y-auto;
 
-  footer {
-    grid-area: footer;
-    @apply border-t border-radix-slate6;
-  }
+        section {
+            @apply px-6 border-b border-radix-slate6;
+        }
+    }
+
+    .right-sidebar {
+        grid-area: right-sidebar;
+        @apply border-l border-radix-slate6;
+    }
+
+    footer {
+        grid-area: footer;
+        @apply border-t border-radix-slate6;
+    }
+}
+
+// Select element
+.select-market-btn {
+    @apply bg-radix-slate1 text-radix-slate12 border border-radix-slate6 rounded p-2 text-sm;
+}
+
+.title {
+    @apply text-lg font-medium;
+}
+
+.panel {
+    @apply bg-radix-slate2;
+}
+
+.fadeOut {
+    animation: fadeOut 0.3s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.fadeIn {
+    animation: fadeIn 0.3s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    @apply space-x-4;
+    &::marker,
+    &::-webkit-details-marker {
+        display: block;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 4px;
+        display: none;
+    }
+
+    @apply border-b slate-border-int h-14 px-4 font-bold relative cursor-pointer hover:bg-radix-slate5;
+}
+
+summary::after {
+    // top: 50%;
+    // transform: translateY(-50%);
+    // left: 4px;
+    content: "►";
+}
+details[open] summary:after {
+    content: "▼";
 }

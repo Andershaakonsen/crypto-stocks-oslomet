@@ -33,4 +33,8 @@ export class Observable {
   get value() {
     return this.data;
   }
+
+  get() {
+    return this.data;
+  }
 }

@@ -18,5 +18,6 @@ public class DataContext : DbContext
         options.UseSqlite(Configuration.GetConnectionString("WebApiDatabase"));
     }
 
-    public DbSet<Cat> Cats { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Wallet> Wallets { get; set; }
 }

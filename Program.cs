@@ -12,8 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 }
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddResponseCaching();
+
 
 var app = builder.Build();
+DotNetEnv.Env.Load();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -24,6 +27,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 // app.UseHttpsRedirection();
+app.UseResponseCaching(); // https://learn.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-6.0
 app.UseStaticFiles();
 app.UseRouting();
 
@@ -32,6 +36,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+
 });
 
 /**
@@ -39,16 +44,24 @@ app.UseEndpoints(endpoints =>
 * This is added to replace Webpack bundler with Vite which is much more modern and easy to setup. 
 */
 if (app.Environment.IsDevelopment())
-{   
+{
     app.UseSpa(spa =>
     {
         /* If request is unhandled redirect to Vite server */
         spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
     });
+
+    // app.MapFallback(context =>
+    // {
+    //     Console.WriteLine(context.Request.Path);
+    //     // context.Response.Redirect("http://localhost:3000");
+    //     return Task.CompletedTask;
+    // });
 }
 else
 {
     app.MapFallbackToFile("index.html");
 }
+
 
 app.Run();

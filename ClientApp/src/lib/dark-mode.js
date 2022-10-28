@@ -1,8 +1,8 @@
-import { Observable } from "./lib/Observable";
+import { Observable } from "./Observable";
 
 const HTML = document.documentElement;
 
-export const createDarkMode = (targetElement) => {
+const createDarkMode = (targetElement) => {
   const darkState = new Observable(false);
 
   const isWindowDark = window.matchMedia(
@@ -27,5 +27,23 @@ export const createDarkMode = (targetElement) => {
 
   targetElement.addEventListener("click", handler);
 
-  return darkState;
+  return {
+    state: darkState,
+    unsubscribe: () => targetElement.removeEventListener("click", handler),
+  };
 };
+
+export function initDarkMode() {
+  /**
+   * Dark mode toggle
+   */
+  const darkToggle = document.getElementById("dark-mode-toggle");
+  const { state: darkState } = createDarkMode(darkToggle);
+
+  // Subscribe to the dark mode state and update the toggle icon
+  darkState.subscribe((isDark) => {
+    darkToggle.innerHTML = /*html*/ `<i class="gg-${
+      isDark ? "sun" : "moon"
+    }"></i>`;
+  });
+}

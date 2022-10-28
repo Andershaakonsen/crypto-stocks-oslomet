@@ -1,15 +1,6 @@
 import "./style.scss";
-import { createDarkMode } from "./dark-mode";
+import { initDarkMode } from "./lib/dark-mode";
+import Dashboard from "./dashboard";
 
-/**
- * Dark mode toggle
- */
-const darkToggle = document.getElementById("dark-mode-toggle");
-const darkState = createDarkMode(darkToggle);
-
-// Subscribe to the dark mode state and update the toggle icon
-darkState.subscribe((isDark) => {
-  darkToggle.innerHTML = /*html*/ `<i class="gg-${
-    isDark ? "sun" : "moon"
-  }"></i>`;
-});
+Dashboard.init();
+initDarkMode();

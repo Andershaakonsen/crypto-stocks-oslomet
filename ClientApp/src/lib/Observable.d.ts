@@ -8,4 +8,6 @@ export class Observable<T> {
   set(data: T | ((data: T) => T)): void;
 
   get value(): T;
+
+  get(): T;
 }
