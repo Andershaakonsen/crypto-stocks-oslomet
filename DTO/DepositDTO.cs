@@ -3,6 +3,6 @@
 */
 public class DepositDTO
 {
-    public int UserId { get; set; }
-    public int Amount { get; set; }
+    public int userId { get; set; }
+    public long amount { get; set; }
 }

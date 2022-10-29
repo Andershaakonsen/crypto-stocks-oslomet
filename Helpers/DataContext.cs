@@ -18,6 +18,14 @@ public class DataContext : DbContext
         options.UseSqlite(Configuration.GetConnectionString("WebApiDatabase"));
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // create a unique index on the user name
+        modelBuilder.Entity<User>().HasData(new { Id = 1, Name = "John Doe" });
+    }
+
     public DbSet<User> Users { get; set; }
     public DbSet<Wallet> Wallets { get; set; }
+
+    public DbSet<Transaction> Transactions { get; set; }
 }

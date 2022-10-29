@@ -1,10 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace crypto_stocks.Entities;
 
+[Index(nameof(UserId), nameof(Symbol), IsUnique = true)]
 public class Wallet
 {
     public int Id { get; set; }
 
-    public int Balance { get; set; } = 0;
+    public float Balance { get; set; } = 0;
+
+    public String Symbol { get; set; } = "USD"; // Default to USD
 
     public int UserId { get; set; }
 

@@ -1,16 +1,18 @@
 import * as Api from "./dashboard.api";
-import { getByDataJS } from "../lib/selectors";
+import { getByDataJS } from "../utils";
 import CurrencyLabel from "./CurrencyLabel";
 import { dashboardState as state } from "./dashboard.state";
-// import { animateClass as animateClassName } from "../lib/animate";
-import WalletManager from "./DepositForm";
+import { animateClass as animateClassName } from "../lib/animate";
+import WalletManager from "./WalletManager";
+import "./OrderForm";
+import CoinlibChart from "./CoinlibChart";
 
 const pairSelector = getByDataJS("pair-selector");
 
 async function init() {
     const data = await Api.getListings();
     state.set((p) => ({ ...p, listings: data }));
-
+    CoinlibChart.init();
     WalletManager();
 }
 
@@ -21,12 +23,6 @@ let listingsRendered = false;
 
 state.subscribe(({ listings }) => {
     if (!listingsRendered && listings.length) {
-        document.querySelector("main").innerHTML = /*html*/ `<pre>
-    <code>
-        ${JSON.stringify(listings[0], null, 2)}
-    </code>
-  </pre>`;
-
         pairSelector.innerHTML = /*html*/ `
     <option disabled selected>Select market</option>
     ${listings
@@ -50,11 +46,11 @@ state.subscribe(({ selected }) => {
 
     const placeholder = getByDataJS("order-placeholder");
     placeholder.style.display = "none"; // TODO - Remove
-    // if (selected)
-    //     animateClassName(placeholder, "fadeOut").then(() => {
-    //         placeholder.style.display = "none";
-    //     });
-    // else placeholder.style.display = "block";
+    if (selected)
+        animateClassName(placeholder, "fadeOut").then(() => {
+            placeholder.style.display = "none";
+        });
+    else placeholder.style.display = "block";
 
     // Set order form select
     if (selected) {

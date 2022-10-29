@@ -36,7 +36,6 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
-
 });
 
 /**
@@ -63,8 +62,9 @@ app.UseEndpoints(endpoints =>
 //     app.MapFallbackToFile("index.html");
 // }
 
-app.MapFallbackToFile("index.html");
-app.MapFallbackToFile("/login", "/login.html");
+// app.MapFallbackToFile("index.html");
+// app.MapFallbackToFile("/login", "/login.html");
+// app.MapFallbackToFile("/history", "/history.html");
 
 
 app.Run();

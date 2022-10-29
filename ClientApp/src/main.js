@@ -1,6 +1,6 @@
-import "./style.scss";
-import { initDarkMode } from "./lib/dark-mode";
+import "./deps.js";
 import Dashboard from "./dashboard";
+import OrderList from "./dashboard/OrderList.js";
 
 Dashboard.init();
-initDarkMode();
+OrderList.init();

@@ -2,13 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "css.gg/icons/scss/dollar";
-@import "css.gg/icons/scss/moon";
-@import "css.gg/icons/scss/sun";
-@import "css.gg/icons/scss/search";
-@import "css.gg/icons/scss/arrow-down-o";
-@import "css.gg/icons/scss/arrow-up-o";
-
 body {
     @apply bg-radix-slate1 text-radix-slate12;
 }
@@ -27,11 +20,11 @@ body {
         "left-sidebar footer right-sidebar";
 
     --sidebar-width: 300px;
-    --footer-width: 175px;
+    --footer-height: 250px;
 
     grid-template-columns: var(--sidebar-width) 1fr var(--sidebar-width);
-    grid-template-rows: 57px calc(100vh - 57px - var(--footer-width)) var(
-            --footer-width
+    grid-template-rows: 57px calc(100vh - 57px - var(--footer-height)) var(
+            --footer-height
         );
 
     header {
@@ -117,7 +110,10 @@ summary {
         display: none;
     }
 
-    @apply border-b slate-border-int h-14 px-4 font-bold relative cursor-pointer hover:bg-radix-slate5;
+    @apply border-b slate-border-int h-14 px-4 font-bold relative cursor-pointer;
+    &.with-hover {
+        @apply hover:bg-radix-slate5;
+    }
 }
 
 summary::after {
@@ -129,3 +125,12 @@ summary::after {
 details[open] summary:after {
     content: "▼";
 }
+
+@import "css.gg/icons/scss/dollar";
+@import "css.gg/icons/scss/moon";
+@import "css.gg/icons/scss/sun";
+@import "css.gg/icons/scss/search";
+@import "css.gg/icons/scss/arrow-down-o";
+@import "css.gg/icons/scss/arrow-up-o";
+@import "css.gg/icons/scss/arrow-left";
+@import "css.gg/icons/scss/external";

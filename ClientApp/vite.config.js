@@ -1,9 +1,13 @@
+import { resolve } from "path";
+
 /** @type {import('vite').UserConfig["build"]} */
 const build = {
     rollupOptions: {
         input: {
-            main: new URL("./index.html", import.meta.url).href,
-            login: new URL("./login/index.html", import.meta.url).href,
+            // main: new URL("./index.html", import.meta.url).href,
+            // history: new URL("./history/index.html", import.meta.url).href,
+            main: resolve(__dirname, "index.html"),
+            history: resolve(__dirname, "history/index.html"),
         },
     },
     outDir: "../wwwroot",
