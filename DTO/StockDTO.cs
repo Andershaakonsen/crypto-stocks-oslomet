@@ -10,3 +10,8 @@ public class CreateOrderDTO
 
     public String mode { get; set; } = "buy";
 }
+
+public class UpdateOrderDTO
+{
+    public decimal units { get; set; }
+}

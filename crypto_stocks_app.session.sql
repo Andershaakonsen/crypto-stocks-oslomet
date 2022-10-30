@@ -1,1 +1,1 @@
-SELECT * FROM Transactions;
+DELETE FROM Transactions;

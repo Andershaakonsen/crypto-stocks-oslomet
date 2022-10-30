@@ -1,7 +1,8 @@
-import { formatCurrency, getByDataJS } from "../utils";
-import { dashboardState, orderState, walletState } from "./dashboard.state";
-import * as API from "./dashboard.api";
-import Toast from "../lib/toast";
+import { formatCurrency, getByDataJS, Toast } from "../utils";
+import { dashboardState, orderState, walletState } from "../state";
+import * as API from "../api";
+import OrderList from "./OrderList";
+import { updateWallets } from "../dashboard/WalletManager";
 /**
  * This file contains the full functionality for the order form.
  */
@@ -46,6 +47,7 @@ const orderCurrencySelect = getByDataJS("order-currency-select");
 const orderAmountInput = getByDataJS("order-amount-input");
 const orderTotalSymbol = getByDataJS("order-total-symbol");
 const orderTotalValue = getByDataJS("order-total-value");
+const maxAmountButton = getByDataJS("max-btn");
 
 dashboardState.on(
     (p) => p.selected,
@@ -74,7 +76,8 @@ orderAmountInput.addEventListener("input", (e) => {
     }
 });
 
-orderState.subscribe(async ({ currency: fromCurrency, amount }) => {
+// Render the total value of the order
+orderState.subscribe(({ currency: fromCurrency, amount }) => {
     // Wait for the user to select a currency
     const { selected: currency } = dashboardState.get();
     if (!currency) return;
@@ -92,10 +95,28 @@ orderState.subscribe(async ({ currency: fromCurrency, amount }) => {
     const total =
         fromCurrency === currency.symbol ? amount * price : amount / price;
 
-    orderTotalValue.textContent = formatCurrency(total);
+    orderTotalValue.textContent = total;
+});
+
+// Update the input when the user clicks the max button
+maxAmountButton.addEventListener("click", () => {
+    const { selected: currency } = dashboardState.get();
+    const { mode, currency: fromCurrency } = orderState.get();
+    if (mode === "sell") return;
+
+    const { USD } = walletState.get();
+    const { balance } = USD;
+
+    const amount =
+        fromCurrency === currency.symbol
+            ? balance / currency.quote.USD.price
+            : balance;
+
+    console.log(amount);
 });
 
 /**
+ * Submit the order to the API
  * @type {HTMLFormElement}
  */
 const form = getByDataJS("order-form");
@@ -107,8 +128,6 @@ form.addEventListener("submit", (e) => {
 
     handleOrderSubmit(Object.fromEntries(formData));
 });
-
-const UNIT_MULTIPLIER = 100000000; // This is the unit multiplier as some currencies can have a lot of decimals
 
 async function handleOrderSubmit(formData) {
     const { selected: selectedCurrency } = dashboardState.get();
@@ -122,14 +141,18 @@ async function handleOrderSubmit(formData) {
             ? amount
             : amount / selectedCurrency.quote.USD.price;
 
-    const requestPromise = (
-        mode === "buy" ? API.createBuyOrder : API.createSellOrder
-    )({ units: totalUnits, currency: selectedCurrency });
+    const payload = { units: totalUnits, currency: selectedCurrency };
+    const request = (mode === "buy" ? API.createBuyOrder : API.createSellOrder)(
+        payload
+    );
 
     try {
-        const order = await requestPromise;
+        await request;
         Toast.success("Order created successfully");
-        console.log(order);
+        // Call the API to update the order list
+
+        OrderList.mutate();
+        updateWallets();
     } catch (error) {
         Toast.error(error.message);
     }

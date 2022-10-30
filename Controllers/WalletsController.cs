@@ -38,7 +38,7 @@ public class WalletsController : ControllerBase
 
         // Query for wallet 
         var query = from w in db.Wallets
-                    where w.UserId == deposit.userId
+                    where w.UserId == deposit.userId && w.Symbol == "USD"
                     select w;
 
         var wallet = query.FirstOrDefault<Wallet>();

@@ -1,9 +1,7 @@
-import "../src/style.scss";
-import { initDarkMode } from "../src/lib/dark-mode";
-import { getOrders } from "../src/dashboard/dashboard.api";
-import { OrderlistItem } from "../src/dashboard/OrderList";
+import { getOrders } from "../src/api";
+import { OrderlistItem } from "../src/Order";
 import { getByDataJS } from "../src/utils";
-initDarkMode();
+import "../src/global";
 
 async function init() {
     const orders = await getOrders();

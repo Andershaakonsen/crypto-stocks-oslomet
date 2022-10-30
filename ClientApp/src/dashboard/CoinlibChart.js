@@ -1,5 +1,4 @@
-import { getByDataJS } from "../utils/selectors";
-import { wretch } from "../lib/request";
+import { getByDataJS } from "../utils";
 import { dashboardState } from "./dashboard.state";
 
 /**
@@ -49,3 +48,76 @@ const CoinlibChart = {
 };
 
 export default CoinlibChart;
+
+const html = ` <!-- COINLIB CHART START -->
+<div
+    style="
+        height: 100%;
+        background-color: var(--slate4);
+        overflow: hidden;
+        box-sizing: border-box;
+        border: 1px solid #282e3b;
+        border-radius: 4px;
+        text-align: right;
+        line-height: 14px;
+        font-size: 12px;
+        font-feature-settings: normal;
+        text-size-adjust: 100%;
+        box-shadow: inset 0 -20px 0 0 #262b38;
+        padding: 1px;
+        padding: 0px;
+        margin: 0px;
+        width: 100%;
+    "
+>
+    <div
+        style="
+            height: 100%;
+            padding: 0px;
+            margin: 0px;
+            width: 100%;
+        "
+    >
+        <iframe
+            data-js="coinlib-widget"
+            src="https://widget.coinlib.io/widget?type=chart&theme=dark&coin_id=859&pref_coin_id=1505"
+            width="100%"
+            height="100%"
+            scrolling="auto"
+            marginwidth="0"
+            marginheight="0"
+            frameborder="0"
+            border="0"
+            style="
+                border: 0;
+                margin: 0;
+                padding: 0;
+                line-height: 14px;
+            "
+        ></iframe>
+    </div>
+    <div
+        style="
+            color: #626b7f;
+            line-height: 14px;
+            font-weight: 400;
+            font-size: 11px;
+            box-sizing: border-box;
+            padding: 2px 6px;
+            width: 100%;
+            font-family: Verdana, Tahoma, Arial, sans-serif;
+        "
+    >
+        <a
+            href="https://coinlib.io"
+            target="_blank"
+            style="
+                font-weight: 500;
+                color: #626b7f;
+                text-decoration: none;
+                font-size: 11px;
+            "
+            >Cryptocurrency Prices</a
+        >&nbsp;by Coinlib
+    </div>
+</div>`;

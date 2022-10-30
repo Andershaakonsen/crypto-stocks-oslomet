@@ -1,6 +1,7 @@
-import "./deps.js";
+import "./global.js";
 import Dashboard from "./dashboard";
-import OrderList from "./dashboard/OrderList.js";
+import OrderList from "./Order/OrderList.js";
+import "./Order/OrderActions";
 
 Dashboard.init();
 OrderList.init();

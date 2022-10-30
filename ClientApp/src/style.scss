@@ -20,9 +20,9 @@ body {
         "left-sidebar footer right-sidebar";
 
     --sidebar-width: 300px;
-    --footer-height: 250px;
+    --footer-height: 300px;
 
-    grid-template-columns: var(--sidebar-width) 1fr var(--sidebar-width);
+    grid-template-columns: var(--sidebar-width) 1fr 0px;
     grid-template-rows: 57px calc(100vh - 57px - var(--footer-height)) var(
             --footer-height
         );
@@ -48,6 +48,7 @@ body {
     .right-sidebar {
         grid-area: right-sidebar;
         @apply border-l border-radix-slate6;
+        display: none;
     }
 
     footer {

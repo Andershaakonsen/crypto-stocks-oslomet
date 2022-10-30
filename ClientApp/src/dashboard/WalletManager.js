@@ -1,8 +1,6 @@
-import { getByDataJS } from "../utils/selectors";
-import Toast from "../lib/toast";
-import { formatCurrency } from "../utils";
-import * as API from "./dashboard.api";
-import { walletState } from "./dashboard.state";
+import { formatCurrency, Toast, getByDataJS } from "../utils";
+import * as API from "../api";
+import { walletState } from "../state";
 
 const depositBtn = getByDataJS("deposit-btn");
 const withDrawBtn = getByDataJS("withdraw-btn");
@@ -11,7 +9,7 @@ const walletList = getByDataJS("wallet-list");
 export async function updateWallets() {
     const wallets = await API.getWallets();
 
-    const usdWallet = wallets.find((w) => w.Symbol === "USD");
+    const usdWallet = wallets.find((w) => w.symbol === "USD");
     // Update the balance
     walletState.set((s) => ({ ...s, wallets, USD: usdWallet }));
 }

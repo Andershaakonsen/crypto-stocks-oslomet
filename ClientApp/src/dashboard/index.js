@@ -1,19 +1,30 @@
-import * as Api from "./dashboard.api";
-import { getByDataJS } from "../utils";
+import * as Api from "../api";
+import {
+    getByDataJS,
+    readFromStorage,
+    writeToStorage,
+    animateClass as animateClassName,
+} from "../utils";
 import CurrencyLabel from "./CurrencyLabel";
-import { dashboardState as state } from "./dashboard.state";
-import { animateClass as animateClassName } from "../lib/animate";
+import { dashboardState as state } from "../state";
 import WalletManager from "./WalletManager";
-import "./OrderForm";
-import CoinlibChart from "./CoinlibChart";
+import "../Order/OrderForm";
+import "./MainDisplay";
 
 const pairSelector = getByDataJS("pair-selector");
 
 async function init() {
     const data = await Api.getListings();
     state.set((p) => ({ ...p, listings: data }));
-    CoinlibChart.init();
-    WalletManager();
+    WalletManager(); // Initialize Wallet manager as we have the data
+
+    // Auto select the selected currency from LS
+    const storedSymbol = readFromStorage("selectedCurrency");
+    if (storedSymbol)
+        state.set((p) => ({
+            ...p,
+            selected: data.find((d) => d.symbol === storedSymbol),
+        }));
 }
 
 /**
@@ -58,6 +69,10 @@ state.subscribe(({ selected }) => {
         orderCurrencySymbol.value = selected?.symbol;
         orderCurrencySymbol.innerHTML = selected?.symbol;
         orderCurrencySymbol.disabled = false;
+
+        // Set the selected currency symbol to local storage.
+        writeToStorage("selectedCurrency", selected.symbol);
+        pairSelector.value = selected.symbol;
     }
 });
 

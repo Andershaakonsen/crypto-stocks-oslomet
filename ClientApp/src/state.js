@@ -1,4 +1,4 @@
-import { Observable } from "../lib/Observable";
+import { Observable } from "./utils";
 
 /**
  * Dashboard State observable
@@ -17,6 +17,8 @@ export const orderState = new Observable({
     mode: "buy",
     amount: 0,
 });
+
+export const orderListState = new Observable([]);
 
 /**
  * Wallet state observable

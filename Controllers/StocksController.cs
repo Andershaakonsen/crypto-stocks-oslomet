@@ -19,7 +19,7 @@ public class StocksController : ControllerBase
         this.db = db;
     }
 
-    // route for [controller]/transactions
+    // Route for [controller]/transactions
     [HttpGet]
     [Route("transactions")]
     public async Task<ActionResult> getTransactions([FromQuery] int limit = 10)
@@ -49,7 +49,7 @@ public class StocksController : ControllerBase
 
     [HttpPost]
 
-    public async Task<ActionResult> CreateOrder([FromBody] CreateOrderDTO orderDTO)
+    public async Task<ActionResult> CreatePosition([FromBody] CreateOrderDTO orderDTO)
     {
         System.Console.WriteLine(JsonConvert.SerializeObject(orderDTO));
         // Check if the user has enough money to buy the stock
@@ -94,8 +94,6 @@ public class StocksController : ControllerBase
             await db.Wallets.AddAsync(stockWallet);
         }
 
-        System.Console.WriteLine("Stock wallet: " + JsonConvert.SerializeObject(stockWallet));
-
         var transaction = new Transaction()
         {
             UserId = orderDTO.userId,
@@ -105,23 +103,22 @@ public class StocksController : ControllerBase
             WalletId = stockWallet.Id
         };
 
-        db.Transactions.Add(transaction);
+        await db.Transactions.AddAsync(transaction);
 
-        // TODO - Move to the finalize transaction handler
-        // // Update the USD wallet 
-        // usdWallet.Balance -= ((float)usdRate);
-        // db.Wallets.Update(usdWallet);
-        // stockWallet.Balance += (float)orderDTO.units;
+        // Update the USD wallet 
+        usdWallet.Balance -= ((float)usdRate);
+        db.Wallets.Update(usdWallet);
+        stockWallet.Balance += (float)orderDTO.units;
 
         var changes = await db.SaveChangesAsync();
 
         if (changes > 0)
         {
+
             return Ok(new ResponseData()
             {
                 message = "Order created",
                 code = Codes.SUCCESS,
-                data = transaction
             });
         }
 
@@ -132,5 +129,138 @@ public class StocksController : ControllerBase
         });
     }
 
+
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<ActionResult> SellPosition([FromRoute] int id)
+    {
+        // Make sure all required rows exists in the database
+        var transaction = await Task.Run(() => db.Transactions.Where(t => t.Id == id).FirstOrDefault<Transaction>());
+
+        if (transaction == null) return NotFound(new ResponseData()
+        {
+            message = "Transaction not found",
+            code = Codes.NOT_FOUND
+        });
+
+        var stockWallet = await Task.Run(() => db.Wallets.Where(w => w.Id == transaction.WalletId).FirstOrDefault<Wallet>());
+
+        if (stockWallet == null) return NotFound(new ResponseData()
+        {
+            message = "Wallet not found",
+            code = Codes.NOT_FOUND
+        });
+
+        var usdWallet = await Task.Run(() => db.Wallets.Where(w => w.UserId == transaction.UserId && w.Symbol == "USD").FirstOrDefault<Wallet>());
+
+        if (usdWallet == null) return NotFound(new ResponseData()
+        {
+            message = "Wallet not found",
+            code = Codes.NOT_FOUND
+        });
+
+
+        // Call API to get the current USD rate for the stock
+        var usdRate = await cmcService.GetUSDExchangeRate(transaction.Units, transaction.Symbol);
+
+        usdWallet.Balance += ((float)usdRate);
+        stockWallet.Balance -= (float)transaction.Units;
+        db.Wallets.Update(usdWallet);
+        db.Wallets.Update(stockWallet);
+        db.Transactions.Remove(transaction);
+
+        return Ok(new ResponseData()
+        {
+            message = "Order deleted",
+            code = Codes.SUCCESS
+        });
+    }
+
+    [HttpPatch]
+    [Route("{id}")]
+
+    public async Task<ActionResult> UpdatePosition([FromRoute] int id, [FromBody] UpdateOrderDTO orderDTO)
+    {
+        var transaction = await Task.Run(() => db.Transactions.Where(t => t.Id == id).FirstOrDefault<Transaction>());
+
+        if (transaction == null) return NotFound(new ResponseData()
+        {
+            message = "Transaction not found",
+            code = Codes.NOT_FOUND
+        });
+
+        var stockWallet = await Task.Run(() => db.Wallets.Where(w => w.Id == transaction.WalletId).FirstOrDefault<Wallet>());
+
+        if (stockWallet == null) return NotFound(new ResponseData()
+        {
+            message = "Wallet not found",
+            code = Codes.NOT_FOUND
+        });
+
+        var usdWallet = await Task.Run(() => db.Wallets.Where(w => w.UserId == transaction.UserId && w.Symbol == "USD").FirstOrDefault<Wallet>());
+
+        if (usdWallet == null) return NotFound(new ResponseData()
+        {
+            message = "Wallet not found",
+            code = Codes.NOT_FOUND
+        });
+
+
+        // Check the amount of units in the orderDTO and compare it to the current units
+        // If the units are less than the current units, sell the difference, otherwise buy the difference. If the units are the same then just return a success message and status not modified
+
+        if (orderDTO.units == transaction.Units)
+        {
+            return StatusCode(304, new ResponseData()
+            {
+                message = "No changes made",
+                code = Codes.SUCCESS
+            });
+        }
+
+        if (orderDTO.units < transaction.Units)
+        {
+            // Sell the difference
+            var difference = transaction.Units - orderDTO.units;
+            var differenceUSD = await cmcService.GetUSDExchangeRate(difference, transaction.Symbol);
+
+            usdWallet.Balance += ((float)differenceUSD);
+            stockWallet.Balance -= (float)difference;
+            db.Wallets.Update(usdWallet);
+            db.Wallets.Update(stockWallet);
+        }
+        else if (orderDTO.units > transaction.Units)
+        {
+            // Buy the difference
+            var difference = orderDTO.units - transaction.Units;
+            var differenceUSD = await cmcService.GetUSDExchangeRate(difference, transaction.Symbol);
+
+            if (usdWallet.Balance < ((float)differenceUSD))
+            {
+                return BadRequest(new ResponseData()
+                {
+                    message = "Insufficient funds",
+                    code = Codes.INSUFFICIENT_FUNDS
+                });
+            }
+
+            usdWallet.Balance -= ((float)differenceUSD);
+            stockWallet.Balance += (float)difference;
+            db.Wallets.Update(usdWallet);
+            db.Wallets.Update(stockWallet);
+        }
+
+        transaction.Units = orderDTO.units;
+
+        db.Transactions.Update(transaction);
+
+        return Ok(new ResponseData()
+        {
+            message = "Order updated",
+            code = Codes.SUCCESS
+        });
+
+
+    }
 
 }

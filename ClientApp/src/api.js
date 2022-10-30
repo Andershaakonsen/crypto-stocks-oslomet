@@ -1,4 +1,4 @@
-import { wretch } from "../lib/request";
+import { wretch } from "./utils";
 
 export async function getListings() {
     // Fetch crypto
@@ -69,8 +69,8 @@ export async function createSellOrder({ units, currency }) {
     return response;
 }
 
-export async function updateOrder(partialBuyOrder) {
-    const response = await wretch("/api/Stocks", {
+export async function updateOrder(orderId, partialBuyOrder) {
+    const response = await wretch(`/api/Stocks/${orderId}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -80,14 +80,16 @@ export async function updateOrder(partialBuyOrder) {
     return response;
 }
 
-export async function deleteOrder(orderId) {
+export async function sellOrder(orderId) {
     const response = await wretch(`/api/Stocks/${orderId}`, {
         method: "DELETE",
     });
     return response;
 }
 
-export async function getOrders() {
-    const json = await wretch(`/api/Stocks/transactions?userId=${USER_ID}`);
+export async function getOrders({ limit = 10 } = {}) {
+    const json = await wretch(
+        `/api/Stocks/transactions?userId=${USER_ID}&limit=${limit}`
+    );
     return json.data;
 }
