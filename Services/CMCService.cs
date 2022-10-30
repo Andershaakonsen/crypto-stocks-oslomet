@@ -13,6 +13,7 @@ public class CMCService : ICMCService
     {
         var client = new HttpClient();
         var url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?limit=10";
+
         client.DefaultRequestHeaders.Add("X-CMC_PRO_API_KEY", Environment.GetEnvironmentVariable("COINBASE_API_KEY")!);
         client.DefaultRequestHeaders.Add("Accept", "application/json");
 

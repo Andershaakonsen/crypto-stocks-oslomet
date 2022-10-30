@@ -211,12 +211,17 @@
             </aside>
             <aside class="right-sidebar"></aside>
             <!-- COIN DISPLAY START-->
-            <main>
-                <h2 class="mt-4 ml-2">
-                    <span> </span>
-
-                    Current $BTC Price: <span data-js="currency-price"> </span>
+            <main class="pt-4 pl-2">
+                <h2>
+                    Current
+                    <span data-js="currency-name"></span>
+                    Price:
+                    <span data-js="currency-price" class="font-bold"></span>$
                 </h2>
+                <h3><span data-js="percent-change-24h"></span> 24h change</h3>
+                <p class="text-radix-slate11">
+                    <span data-js="currency-last-updated"></span> last updated
+                </p>
             </main>
             <!-- COIN DISPLAY END-->
             <!-- ORDER LIST START -->
