@@ -4,6 +4,7 @@
  * Written using WebComponents in order to efficiently bind events
  * Essentially mimmics React lifecycle methods
  * @source https://developer.mozilla.org/en-US/docs/Web/Web_Components
+ * @author Sanna Jammeh
  */
 
 import { sellOrder, updateOrder } from "../api";
