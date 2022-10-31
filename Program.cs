@@ -17,7 +17,7 @@ builder.Services.AddResponseCaching();
 
 var app = builder.Build();
 DotNetEnv.Env.Load();
-
+System.Console.WriteLine(Environment.GetEnvironmentVariable("COINBASE_API_KEY"));
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
