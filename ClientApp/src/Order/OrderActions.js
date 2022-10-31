@@ -64,7 +64,7 @@ export class OrderActions extends HTMLElement {
      * On Mounted
      */
     connectedCallback() {
-        this.modal = this.querySelector("sell-modal");
+        this.modal = this.querySelector("update-modal");
         const editOrderBtn = this.querySelector('[data-js="edit-order-btn"]');
         const cancelOrderBtn = this.querySelector(
             '[data-js="cancel-order-btn"]'
