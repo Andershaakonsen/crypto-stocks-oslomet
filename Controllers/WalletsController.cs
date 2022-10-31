@@ -5,7 +5,7 @@ using crypto_stocks.DTO;
 namespace crypto_stocks.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class WalletsController : ControllerBase
 {
     private readonly DataContext db;

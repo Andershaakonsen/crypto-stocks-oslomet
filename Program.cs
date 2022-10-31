@@ -12,12 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 }
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddResponseCaching();
+builder.Services.AddResponseCaching(); // Add response caching to not drain coinbase API key limits
 
 
 var app = builder.Build();
 DotNetEnv.Env.Load();
-System.Console.WriteLine(Environment.GetEnvironmentVariable("COINBASE_API_KEY"));
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -26,11 +26,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-// app.UseHttpsRedirection();
 app.UseResponseCaching(); // https://learn.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-6.0
 app.UseStaticFiles();
 app.UseRouting();
 
+// All API endpoints here
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
@@ -38,33 +38,14 @@ app.UseEndpoints(endpoints =>
     pattern: "{controller}/{action=Index}/{id?}");
 });
 
-/**
-* If we are in dev mode, init SPA dev server and proxy requests
-* This is added to replace Webpack bundler with Vite which is much more modern and easy to setup. 
-*/
-// if (app.Environment.IsDevelopment())
-// {
-//     // app.UseSpa(spa =>
-//     // {
-//     //     /* If request is unhandled redirect to Vite server */
-//     //     spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
-//     // });
 
-//     // app.MapFallback(context =>
-//     // {
-//     //     Console.WriteLine(context.Request.Path);
-//     //     // context.Response.Redirect("http://localhost:3000");
-//     //     return Task.CompletedTask;
-//     // });
-// }
-// else
-// {
-//     app.MapFallbackToFile("index.html");
-// }
 
-// app.MapFallbackToFile("index.html");
-// app.MapFallbackToFile("/login", "/login.html");
-// app.MapFallbackToFile("/history", "/history.html");
+app.MapFallbackToFile("index.html");
 
+// if we are in production map the history page
+if (!app.Environment.IsDevelopment())
+{
+    app.MapFallbackToFile("/history", "/history/index.html");
+}
 
 app.Run();

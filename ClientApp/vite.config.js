@@ -10,7 +10,7 @@ const build = {
             history: resolve(__dirname, "history/index.html"),
         },
     },
-    outDir: "../wwwroot",
+    outDir: "./dist",
 };
 
 /** @type {import('vite').UserConfig} */
@@ -22,9 +22,6 @@ export default {
                 target: "http://localhost:5001",
                 changeOrigin: true,
                 secure: false,
-                rewrite: (path) => {
-                    return path.replace(/^\/api/, "");
-                },
             },
         },
         hmr: {

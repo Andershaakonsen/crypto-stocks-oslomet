@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace crypto_stocks.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class StocksController : ControllerBase
 {
     private readonly DataContext db;
