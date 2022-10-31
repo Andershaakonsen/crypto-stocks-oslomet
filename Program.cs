@@ -18,6 +18,13 @@ builder.Services.AddResponseCaching(); // Add response caching to not drain coin
 var app = builder.Build();
 DotNetEnv.Env.Load();
 
+// migrate any database changes on startup (includes initial db creation)
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+    dataContext.Database.EnsureCreated();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
