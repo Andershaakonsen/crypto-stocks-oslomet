@@ -1,10 +1,9 @@
 /**
- * Sell Modal
- * Contains Web component for sell modal
+ * Update Modal
+ * Contains Web component for update modal
  * Written using WebComponents in order to efficiently bind events & reusable code
  * Essentially mimmics React lifecycle methods
  * @source https://developer.mozilla.org/en-US/docs/Web/Web_Components
- * @author Sanna Jammeh
  */
 
 import { updateOrder } from "../api";
@@ -13,7 +12,7 @@ import { orderListState } from "../state";
 import { Toast } from "../utils";
 import OrderList from "./OrderList";
 
-class SellModal extends HTMLElement {
+class UpdateModal extends HTMLElement {
     mounted = false;
     open = false;
     currentOrder = null;
@@ -144,4 +143,4 @@ class SellModal extends HTMLElement {
     }
 }
 
-customElements.define("sell-modal", SellModal);
+customElements.define("update-modal", UpdateModal);

@@ -1,42 +1,8 @@
-import { formatCurrency, getByDataJS, Toast } from "../utils";
-import { dashboardState, orderState, walletState } from "../state";
+import { getByDataJS, Toast } from "../utils";
+import { dashboardState, orderState } from "../state";
 import * as API from "../api";
 import OrderList from "./OrderList";
 import { updateWallets } from "../dashboard/WalletManager";
-/**
- * This file contains the full functionality for the order form.
- */
-
-const buyToggle = getByDataJS("buy-toggle");
-const sellToggle = getByDataJS("sell-toggle");
-
-buyToggle.addEventListener("click", () =>
-    orderState.set((p) => ({ ...p, mode: "buy" }))
-);
-sellToggle.addEventListener("click", () =>
-    orderState.set((p) => ({ ...p, mode: "sell" }))
-);
-
-/** RENDER ORDER TOGGLE */
-orderState.subscribe(({ mode }) => {
-    if (mode === "buy") {
-        buyToggle.classList.add("green-solid-int");
-        buyToggle.classList.remove("slate-cta-int");
-        buyToggle.classList.remove("text-radix-slate11");
-
-        sellToggle.classList.remove("red-solid-int");
-        sellToggle.classList.add("slate-cta-int");
-        sellToggle.classList.add("text-radix-slate11");
-    } else {
-        sellToggle.classList.add("red-solid-int");
-        sellToggle.classList.remove("slate-cta-int");
-        sellToggle.classList.remove("text-radix-slate11");
-
-        buyToggle.classList.remove("green-solid-int");
-        buyToggle.classList.add("slate-cta-int");
-        buyToggle.classList.add("text-radix-slate11");
-    }
-});
 
 /**
  * RENDER ORDER DATA
@@ -47,7 +13,6 @@ const orderCurrencySelect = getByDataJS("order-currency-select");
 const orderAmountInput = getByDataJS("order-amount-input");
 const orderTotalSymbol = getByDataJS("order-total-symbol");
 const orderTotalValue = getByDataJS("order-total-value");
-const maxAmountButton = getByDataJS("max-btn");
 
 dashboardState.on(
     (p) => p.selected,
@@ -98,23 +63,6 @@ orderState.subscribe(({ currency: fromCurrency, amount }) => {
     orderTotalValue.textContent = total;
 });
 
-// Update the input when the user clicks the max button
-maxAmountButton.addEventListener("click", () => {
-    const { selected: currency } = dashboardState.get();
-    const { mode, currency: fromCurrency } = orderState.get();
-    if (mode === "sell") return;
-
-    const { USD } = walletState.get();
-    const { balance } = USD;
-
-    const amount =
-        fromCurrency === currency.symbol
-            ? balance / currency.quote.USD.price
-            : balance;
-
-    console.log(amount);
-});
-
 /**
  * Submit the order to the API
  * @type {HTMLFormElement}
@@ -131,7 +79,7 @@ form.addEventListener("submit", (e) => {
 
 async function handleOrderSubmit(formData) {
     const { selected: selectedCurrency } = dashboardState.get();
-    const { mode, currency: fromCurrencySymbol } = orderState.get();
+    const { currency: fromCurrencySymbol } = orderState.get();
 
     const amount = parseFloat(formData.amount);
 
@@ -142,12 +90,9 @@ async function handleOrderSubmit(formData) {
             : amount / selectedCurrency.quote.USD.price;
 
     const payload = { units: totalUnits, currency: selectedCurrency };
-    const request = (mode === "buy" ? API.createBuyOrder : API.createSellOrder)(
-        payload
-    );
 
     try {
-        await request;
+        await API.createBuyOrder(payload);
         Toast.success("Order created successfully");
         // Call the API to update the order list
 

@@ -222,8 +222,8 @@ public class StocksController : ControllerBase
 
 
         // Check the amount of units in the orderDTO and compare it to the current units
-        // If the units are less than the current units, sell the difference, otherwise buy the difference. If the units are the same then just return a success message and status not modified
-
+        // If the units are less than the current units, sell the difference, otherwise buy the difference. 
+        // If the units are the same then just return a success message and status not modified
         if (orderDTO.units == transaction.Units)
         {
             return Ok(new ResponseData()

@@ -1,7 +1,9 @@
-import { formatUSD, getAllByDataJS, getByDataJS } from "../utils";
+import { formatUSD, getByDataJS } from "../utils";
 import { getOrders } from "../api";
 import { orderListState } from "../state";
 
+// children is the order-actions WebComponent if provided. This item is reused in /history without the order-actions
+// "as" property to decide what the element should be rendered as. /history renders as div
 export function OrderlistItem({ order, as = "li", children = "" }) {
     return /*html*/ `
     <${as}
@@ -12,7 +14,7 @@ export function OrderlistItem({ order, as = "li", children = "" }) {
         >
             <span class="h-full w-1 block bg-radix-green9"></span>
             <span class="uppercase">
-                ${order.mode}
+                BUY
             </span>
             <span>
                 $${order.symbol}
@@ -42,33 +44,8 @@ export function OrderlistItem({ order, as = "li", children = "" }) {
     </${as}>`;
 }
 
-const OrderListActions = ({ order }) => {
-    return /*html*/ `
-        <div class="flex items-center gap-2 justify-end">
-            <button
-                class="flex items-center bg-radix-green3 text-radix-green11 text-sm py-1 px-2 rounded border green-border-int"
-                data-js="edit-order-btn"
-                data-order-id="${order.id}"
-            >
-                Update
-            </button>
-            <button
-                class="flex items-center bg-radix-red3 text-radix-red11 text-sm py-1 px-2 rounded border red-border-int"
-                data-js="cancel-order-btn"
-                data-order-id="${order.id}"
-            >
-                Sell
-            </button>
-        </div>
-    `;
-};
-
-async function handleSellOrder(orderId) {
-    console.log("Sell order", orderId);
-}
-
 const init = async () => {
-    const orders = await getOrders({ limit: 3 }); // Max 3 items on dashboard
+    const orders = await getOrders({ limit: 100 });
     orderListState.set(orders);
 
     /**
@@ -91,7 +68,7 @@ const init = async () => {
 };
 
 const mutate = async () => {
-    const orders = await getOrders({ limit: 3 });
+    const orders = await getOrders({ limit: 100 });
     orderListState.set(orders);
 };
 

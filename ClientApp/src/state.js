@@ -14,7 +14,6 @@ export const dashboardState = new Observable({
  */
 export const orderState = new Observable({
     currency: "USDT",
-    mode: "buy",
     amount: 0,
 });
 

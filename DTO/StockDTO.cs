@@ -8,7 +8,6 @@ public class CreateOrderDTO
 
     public int userId { get; set; }
 
-    public String mode { get; set; } = "buy";
 }
 
 public class UpdateOrderDTO

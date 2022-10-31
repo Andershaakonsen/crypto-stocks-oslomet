@@ -118,13 +118,15 @@ summary {
 }
 
 summary::after {
-    // top: 50%;
-    // transform: translateY(-50%);
-    // left: 4px;
     content: "►";
 }
 details[open] summary:after {
     content: "▼";
+}
+
+select {
+    -webkit-appearance: none;
+    @apply bg-radix-slate1 text-radix-slate12 border border-radix-slate6 rounded p-2 text-sm;
 }
 
 @import "css.gg/icons/scss/dollar";

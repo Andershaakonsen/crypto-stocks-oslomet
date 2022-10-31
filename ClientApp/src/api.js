@@ -47,23 +47,6 @@ export async function createBuyOrder({ units, currency }) {
             units,
             symbol: currency.symbol,
             userId: USER_ID,
-            mode: "buy",
-        }),
-    });
-    return response;
-}
-
-export async function createSellOrder({ units, currency }) {
-    const response = await wretch("/api/Stocks", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            units,
-            symbol: currency.symbol,
-            userId: USER_ID,
-            mode: "sell",
         }),
     });
     return response;

@@ -4,14 +4,13 @@
  * Written using WebComponents in order to efficiently bind events
  * Essentially mimmics React lifecycle methods
  * @source https://developer.mozilla.org/en-US/docs/Web/Web_Components
- * @author Sanna Jammeh
  */
 
 import { sellOrder } from "../api";
 import { updateWallets } from "../dashboard/WalletManager";
 import { Toast } from "../utils";
 import OrderList from "./OrderList";
-import "./SellModal";
+import "./UpdateModal";
 
 export class OrderActions extends HTMLElement {
     constructor() {
@@ -32,7 +31,7 @@ export class OrderActions extends HTMLElement {
         >
             Sell
         </button>
-        <sell-modal data-order-id="${this.dataset.orderId}" data-open="false"></sell-modal>
+        <update-modal data-order-id="${this.dataset.orderId}" data-open="false"></update-modal>
     </div>`;
     }
 
