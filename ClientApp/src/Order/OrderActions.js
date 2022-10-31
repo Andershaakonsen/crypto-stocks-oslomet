@@ -7,9 +7,11 @@
  * @author Sanna Jammeh
  */
 
-import { sellOrder, updateOrder } from "../api";
+import { sellOrder } from "../api";
+import { updateWallets } from "../dashboard/WalletManager";
 import { Toast } from "../utils";
 import OrderList from "./OrderList";
+import "./SellModal";
 
 export class OrderActions extends HTMLElement {
     constructor() {
@@ -30,40 +32,28 @@ export class OrderActions extends HTMLElement {
         >
             Sell
         </button>
+        <sell-modal data-order-id="${this.dataset.orderId}" data-open="false"></sell-modal>
     </div>`;
     }
 
-    handleSellOrder = async () => {
+    handleSellClick = async () => {
         try {
-            const response = await sellOrder(this.orderId);
-            console.log(
-                "🚀 ~ file: OrderActions.js ~ line 34 ~ OrderActions ~ handleSellOrder= ~ response",
-                response
-            );
+            await sellOrder(this.orderId);
 
             this.revalidateOrders();
+            Toast.success("Order sold successfully");
         } catch (error) {
             Toast.error(error.message);
         }
     };
 
-    handleEditOrder = async () => {
-        try {
-            const response = await updateOrder(this.orderId, {
-                status: "updated",
-            });
-            console.log(
-                "🚀 ~ file: OrderActions.js ~ line 45 ~ OrderActions ~ handleEditOrder= ~ response",
-                response
-            );
-
-            this.revalidateOrders();
-        } catch (error) {
-            Toast.error(error.message);
-        }
+    handleEditClick = async () => {
+        this.modal.setAttribute("data-open", "true");
     };
 
+    // Update all the related data when called
     revalidateOrders = () => {
+        updateWallets();
         OrderList.mutate();
     };
 
@@ -75,13 +65,14 @@ export class OrderActions extends HTMLElement {
      * On Mounted
      */
     connectedCallback() {
+        this.modal = this.querySelector("sell-modal");
         const editOrderBtn = this.querySelector('[data-js="edit-order-btn"]');
         const cancelOrderBtn = this.querySelector(
             '[data-js="cancel-order-btn"]'
         );
 
-        editOrderBtn.addEventListener("click", this.handleEditOrder);
-        cancelOrderBtn.addEventListener("click", this.handleSellOrder);
+        editOrderBtn.addEventListener("click", this.handleEditClick);
+        cancelOrderBtn.addEventListener("click", this.handleSellClick);
         this.setOrderId();
     }
 
@@ -106,9 +97,9 @@ export class OrderActions extends HTMLElement {
             '[data-js="cancel-order-btn"]'
         );
 
-        editOrderBtn.removeEventListener("click", this.handleEditOrder);
+        editOrderBtn.removeEventListener("click", this.handleEditClick);
 
-        cancelOrderBtn.removeEventListener("click", this.handleSellOrder);
+        cancelOrderBtn.removeEventListener("click", this.handleSellClick);
     }
 }
 

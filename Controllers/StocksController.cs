@@ -51,7 +51,6 @@ public class StocksController : ControllerBase
 
     public async Task<ActionResult> CreatePosition([FromBody] CreateOrderDTO orderDTO)
     {
-        System.Console.WriteLine(JsonConvert.SerializeObject(orderDTO));
         // Check if the user has enough money to buy the stock
         var query = from w in db.Wallets
                     where w.UserId == orderDTO.userId && w.Symbol == "USD"
@@ -79,19 +78,19 @@ public class StocksController : ControllerBase
             });
         }
 
+
         // Create or update wallet for the stock
-        var stockWallet = await Task.Run(() => db.Wallets.Where(w => w.UserId == orderDTO.userId && w.Symbol == orderDTO.symbol).FirstOrDefault<Wallet>());
+        var stockWallet = db.Wallets.Where(w => w.UserId == orderDTO.userId && w.Symbol == orderDTO.symbol).FirstOrDefault<Wallet>();
 
         if (stockWallet == null)
         {
-            stockWallet = new Wallet()
-            {
-                UserId = orderDTO.userId,
-                Symbol = orderDTO.symbol,
-                Balance = 0
-            };
+            stockWallet = new Wallet();
 
-            await db.Wallets.AddAsync(stockWallet);
+            stockWallet.UserId = orderDTO.userId;
+            stockWallet.Symbol = orderDTO.symbol;
+            stockWallet.Balance = 0;
+
+            db.Wallets.Add(stockWallet);
         }
 
         var transaction = new Transaction()
@@ -100,33 +99,47 @@ public class StocksController : ControllerBase
             Symbol = orderDTO.symbol,
             Amount = ((float)usdRate),
             Units = orderDTO.units,
-            WalletId = stockWallet.Id
+            Wallet = stockWallet,
         };
 
-        await db.Transactions.AddAsync(transaction);
+        db.Transactions.Add(transaction);
+
 
         // Update the USD wallet 
         usdWallet.Balance -= ((float)usdRate);
-        db.Wallets.Update(usdWallet);
         stockWallet.Balance += (float)orderDTO.units;
 
-        var changes = await db.SaveChangesAsync();
-
-        if (changes > 0)
+        try
         {
+            var changes = await db.SaveChangesAsync();
 
-            return Ok(new ResponseData()
+            if (changes > 0)
             {
-                message = "Order created",
-                code = Codes.SUCCESS,
+
+                return Ok(new ResponseData()
+                {
+                    message = "Order created",
+                    code = Codes.SUCCESS,
+                });
+            }
+
+            return BadRequest(new ResponseData()
+            {
+                message = "Failed to create order",
+                code = Codes.DATABASE_ERROR
             });
         }
-
-        return BadRequest(new ResponseData()
+        catch (Exception e)
         {
-            message = "Failed to create order",
-            code = Codes.DATABASE_ERROR
-        });
+            Console.WriteLine("Error saving changes: " + e.Message);
+            System.Console.Write(e);
+
+            return BadRequest(new ResponseData()
+            {
+                message = "Failed to create order",
+                code = Codes.DATABASE_ERROR
+            });
+        }
     }
 
 
@@ -168,6 +181,8 @@ public class StocksController : ControllerBase
         db.Wallets.Update(usdWallet);
         db.Wallets.Update(stockWallet);
         db.Transactions.Remove(transaction);
+
+        await db.SaveChangesAsync();
 
         return Ok(new ResponseData()
         {
@@ -211,12 +226,13 @@ public class StocksController : ControllerBase
 
         if (orderDTO.units == transaction.Units)
         {
-            return StatusCode(304, new ResponseData()
+            return Ok(new ResponseData()
             {
                 message = "No changes made",
                 code = Codes.SUCCESS
             });
         }
+
 
         if (orderDTO.units < transaction.Units)
         {
@@ -226,6 +242,7 @@ public class StocksController : ControllerBase
 
             usdWallet.Balance += ((float)differenceUSD);
             stockWallet.Balance -= (float)difference;
+            transaction.Amount -= ((float)differenceUSD);
             db.Wallets.Update(usdWallet);
             db.Wallets.Update(stockWallet);
         }
@@ -246,6 +263,7 @@ public class StocksController : ControllerBase
 
             usdWallet.Balance -= ((float)differenceUSD);
             stockWallet.Balance += (float)difference;
+            transaction.Amount += ((float)differenceUSD);
             db.Wallets.Update(usdWallet);
             db.Wallets.Update(stockWallet);
         }
@@ -253,6 +271,8 @@ public class StocksController : ControllerBase
         transaction.Units = orderDTO.units;
 
         db.Transactions.Update(transaction);
+
+        await db.SaveChangesAsync();
 
         return Ok(new ResponseData()
         {

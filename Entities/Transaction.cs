@@ -13,11 +13,11 @@ public class Transaction
 
     public decimal Units { get; set; }
 
-    public int UserId { get; set; }
 
     public String status { get; set; } = "pending"; // pending, completed
 
     public String Mode { get; set; } = "buy"; // buy, sell
+    public int UserId { get; set; }
 
     public User User { get; set; }
 
