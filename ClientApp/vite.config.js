@@ -1,4 +1,5 @@
 import { swcReactRefresh } from "vite-plugin-swc-react-refresh";
+import mkcert from "vite-plugin-mkcert";
 
 /** @type {import('vite').UserConfig["build"]} */
 const build = {
@@ -8,21 +9,19 @@ const build = {
 /** @type {import('vite').UserConfig} */
 export default {
     server: {
+        https: true,
         port: 3000,
         proxy: {
             "/api": {
-                target: "http://localhost:5001",
+                target: "https://localhost:5002",
                 changeOrigin: true,
-                secure: false,
+                secure: true,
             },
-        },
-        hmr: {
-            protocol: "ws",
         },
     },
     build,
     esbuild: {
         jsx: "automatic",
     },
-    plugins: [swcReactRefresh()],
+    plugins: [swcReactRefresh(), mkcert()],
 };
