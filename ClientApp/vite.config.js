@@ -1,15 +1,7 @@
-import { resolve } from "path";
+import { swcReactRefresh } from "vite-plugin-swc-react-refresh";
 
 /** @type {import('vite').UserConfig["build"]} */
 const build = {
-    rollupOptions: {
-        input: {
-            // main: new URL("./index.html", import.meta.url).href,
-            // history: new URL("./history/index.html", import.meta.url).href,
-            main: resolve(__dirname, "index.html"),
-            history: resolve(__dirname, "history/index.html"),
-        },
-    },
     outDir: "./dist",
 };
 
@@ -29,27 +21,8 @@ export default {
         },
     },
     build,
-    plugins: [useForwardTrailing(Object.keys(build.rollupOptions.input))],
+    esbuild: {
+        jsx: "automatic",
+    },
+    plugins: [swcReactRefresh()],
 };
-
-// Forward trailing slash - Vite error
-// https://github.com/vitejs/vite/issues/6596#issuecomment-1114363584
-function useForwardTrailing(routes) {
-    return {
-        name: "forward-to-trailing-slash",
-        configureServer(server) {
-            server.middlewares.use((req, _res, next) => {
-                const requestURLwithoutLeadingSlash = req.url.substring(1);
-
-                if (
-                    Object.values(routes).includes(
-                        requestURLwithoutLeadingSlash
-                    )
-                ) {
-                    req.url = `${req.url}/`;
-                }
-                next();
-            });
-        },
-    };
-}
