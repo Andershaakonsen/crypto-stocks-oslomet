@@ -49,10 +49,4 @@ app.UseEndpoints(endpoints =>
 
 app.MapFallbackToFile("index.html");
 
-// if we are in production map the history page
-if (!app.Environment.IsDevelopment())
-{
-    app.MapFallbackToFile("/history", "/history/index.html");
-}
-
 app.Run();
