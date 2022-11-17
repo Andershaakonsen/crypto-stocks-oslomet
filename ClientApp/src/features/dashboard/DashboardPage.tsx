@@ -1,5 +1,8 @@
 // import { useStocks } from "./hooks";
 
+import { Button } from "components";
+import Details from "components/Details";
+
 const DashboardPage = () => {
     return (
         <div className="dashboard">
@@ -48,10 +51,7 @@ const DashboardPage = () => {
                     </div>
                 </section>
                 {/* WALLET BALANCE START */}
-                <details className="panel" open>
-                    <summary className="h-14 px-4 font-bold cursor-pointer sticky top-14 panel z-10">
-                        Wallet Balance
-                    </summary>
+                <Details title="Wallet Balance">
                     <section className="panel py-1">
                         <div className="flex items-center justify-between">
                             <span className="text-radix-slate11">Asset</span>
@@ -76,7 +76,7 @@ const DashboardPage = () => {
                             </button>
                         </div>
                     </section>
-                </details>
+                </Details>
 
                 {/* ORDER FROM START */}
                 <section className="py-3 panel sticky top-14">
@@ -136,9 +136,9 @@ const DashboardPage = () => {
             <footer className="overflow-y-auto">
                 <div className="flex items-center border-b slate-border bg-radix-slate3 h-12 px-4 justify-between ">
                     <p className="title !text-base">Order History</p>
-                    <a className="flex items-center bg-radix-blue3 text-radix-blue11 p-1 px-3 rounded border blue-border-int ">
-                        <i className="gg-external mr-2">View All</i>
-                    </a>
+                    <Button size="sm">
+                        <i className="gg-external mr-2"></i>View All
+                    </Button>
                 </div>
                 <div className="grid grid-cols-5 text-radix-slate11 px-4 py-1 text-sm bg-radix-slate3 sticky top-0 z-10">
                     <span className="border-r px-3 slate-border">Type</span>
