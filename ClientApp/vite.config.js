@@ -1,5 +1,7 @@
 import { swcReactRefresh } from "vite-plugin-swc-react-refresh";
 import mkcert from "vite-plugin-mkcert";
+import tsconfigPaths from "vite-tsconfig-paths";
+import https from "node:https";
 
 /** @type {import('vite').UserConfig["build"]} */
 const build = {
@@ -16,6 +18,10 @@ export default {
                 target: "https://localhost:5002",
                 changeOrigin: true,
                 secure: true,
+                agent: new https.Agent({
+                    // Override the agent to allow self signed certificates in development mode
+                    rejectUnauthorized: false,
+                }),
             },
         },
     },
@@ -23,5 +29,5 @@ export default {
     esbuild: {
         jsx: "automatic",
     },
-    plugins: [swcReactRefresh(), mkcert()],
+    plugins: [tsconfigPaths(), swcReactRefresh(), mkcert()],
 };
