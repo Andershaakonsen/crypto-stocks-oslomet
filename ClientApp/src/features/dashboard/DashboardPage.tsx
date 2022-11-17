@@ -8,7 +8,6 @@ import Sidebar from "./Sidebar";
 const DashboardPage = () => {
     return (
         <div className="dashboard">
-            <Header />
             <Sidebar />
             <aside className="right-sidebar"></aside>
             <CoinDisplay />

@@ -15,7 +15,6 @@ body {
     display: grid;
 
     grid-template-areas:
-        "header header header"
         "left-sidebar main right-sidebar"
         "left-sidebar footer right-sidebar";
 
@@ -23,13 +22,9 @@ body {
     --footer-height: 300px;
 
     grid-template-columns: var(--sidebar-width) 1fr 0px;
-    grid-template-rows: 57px calc(100vh - 57px - var(--footer-height)) var(
+    grid-template-rows: calc(100vh - 57px - var(--footer-height)) var(
             --footer-height
         );
-
-    header {
-        grid-area: header;
-    }
 
     main {
         grid-area: main;
