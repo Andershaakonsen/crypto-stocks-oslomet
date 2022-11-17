@@ -10,9 +10,15 @@ import {
 import { SWRConfig } from "swr";
 import { ofetch } from "ofetch";
 import DashboardPage from "features/dashboard/DashboardPage";
+import UIPreview from "components/ui-preview";
 
 const router = createBrowserRouter(
-    createRoutesFromElements(<Route path="/" element={<DashboardPage />} />)
+    createRoutesFromElements(
+        <>
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="ui" element={<UIPreview />} />
+        </>
+    )
 );
 
 // Create a global fetcher for SWR using ofetch library (modified fetch wrapper)
