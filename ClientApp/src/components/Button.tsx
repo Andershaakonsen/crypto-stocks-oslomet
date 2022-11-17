@@ -2,7 +2,7 @@ import classed from "@tw-classed/react";
 
 export const Button = classed(
     "button",
-    "flex items-center justify-center border border-transparent rounded",
+    "flex items-center justify-center border border-transparent rounded transition-all",
     {
         variants: {
             size: {
@@ -15,6 +15,7 @@ export const Button = classed(
                 blue: "blue-bg-int text-radix-blue11 !blue-border-int",
                 slate: "slate-bg-int text-radix-slate11 !slate-border-int",
                 green: "green-bg-int text-radix-green11 !green-border-int",
+                red: "red-bg-int text-radix-red11 !red-border-int",
             },
             square: {
                 true: "rounded-none",

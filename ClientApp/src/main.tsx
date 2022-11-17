@@ -1,4 +1,4 @@
-import "./src/style.scss";
+import "./style.scss";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import {
@@ -6,18 +6,32 @@ import {
     RouterProvider,
     createRoutesFromElements,
     Route,
+    Link,
 } from "react-router-dom";
 import { SWRConfig } from "swr";
 import { ofetch } from "ofetch";
 import DashboardPage from "features/dashboard/DashboardPage";
-import UIPreview from "components/ui-preview";
+import UIPreview from "components/design-system";
+import { Button } from "components";
+
+const Error = () => (
+    <div className="h-screen w-full text-radix-red11 grid place-items-center">
+        <div className="text-center">
+            <span>Something went wrong</span>
+            <Button className="mt-4" color="red" as={Link} to={"/"}>
+                <span>Try again</span>
+            </Button>
+        </div>
+    </div>
+);
 
 const router = createBrowserRouter(
     createRoutesFromElements(
-        <>
+        <Route errorElement={<Error />}>
             <Route path="/" element={<DashboardPage />} />
-            <Route path="ui" element={<UIPreview />} />
-        </>
+            <Route path="design" element={<UIPreview />} />
+            <Route path="*" element={<div>404</div>} />
+        </Route>
     )
 );
 
