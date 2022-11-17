@@ -7,10 +7,8 @@ import {
     createRoutesFromElements,
     Route,
 } from "react-router-dom";
-import HomePage from "pages/HomePage";
 import { SWRConfig } from "swr";
 import { ofetch } from "ofetch";
-
 import DashboardPage from "features/dashboard/DashboardPage";
 
 const router = createBrowserRouter(
