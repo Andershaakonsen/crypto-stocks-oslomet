@@ -3,7 +3,7 @@ import { forwardRef, useId } from "react";
 
 export const Input = classed(
     "input",
-    "block bg-transparent h-full w-full border border-transparent rounded transition-all",
+    "block bg-transparent w-full border border-transparent rounded transition-all outline-none focus:ring",
     {
         variants: {
             size: {
@@ -13,7 +13,7 @@ export const Input = classed(
             },
             color: {
                 secondary:
-                    "!slate-border-int focus:!border-transparent focus:ring-radix-blue8",
+                    "!slate-border-int focus:!border-transparent  focus:ring-radix-blue8",
                 blue: "!blue-border-int focus:!border-transparent focus:ring-radix-blue8 focus:text-radix-blue11",
                 green: "!green-border-int focus:!border-transparent focus:ring-radix-green8 focus:text-radix-green11",
                 error: "!red-border-int focus:!border-transparent focus:ring-radix-red8 !text-radix-red11",

@@ -1,6 +1,5 @@
 // import { useStocks } from "./hooks";
 
-import Header from "components/Header";
 import CoinDisplay from "./CoinDisplay";
 import OrderHistory from "./OrderHistory";
 import Sidebar from "./Sidebar";
