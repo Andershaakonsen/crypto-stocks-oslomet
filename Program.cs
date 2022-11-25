@@ -1,6 +1,9 @@
+using System.Security.Claims;
 using crypto_stocks.Entities;
 using crypto_stocks.Helpers;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 // using identity
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,15 +16,43 @@ var builder = WebApplication.CreateBuilder(args);
     // add db context
     services.AddDbContext<DataContext>();
     // Initialize auth
-    services.AddAuthentication();
-    services.AddIdentity<Auth, IdentityRole>(o =>
+    services.AddAuthentication(options =>
     {
-        o.Password.RequireDigit = false;
-        o.Password.RequireLowercase = false;
-        o.Password.RequireNonAlphanumeric = false;
-        o.Password.RequireUppercase = false;
-        o.User.RequireUniqueEmail = true;
-    }).AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "https://localhost:5001",
+            ValidAudience = "https://localhost:5001",
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")!))
+        };
+
+        // Whenever a token is validated, we want to add the user to the context
+        options.Events = new JwtBearerEvents()
+        {
+            OnTokenValidated = context =>
+            {
+                var userId = int.Parse(context.Principal.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                var user = context.HttpContext.RequestServices.GetRequiredService<DataContext>().Users.Find(userId);
+                if (user == null)
+                {
+                    context.Fail("Unauthorized");
+                }
+
+                // Using HttpContext.Features to store the user object while the request is being processed
+                context.HttpContext.Features.Set<User>(user);
+                return Task.CompletedTask;
+
+            }
+        };
+    });
 }
 
 
@@ -47,10 +78,13 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+
 app.UseResponseCaching(); // https://learn.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-6.0
 app.UseStaticFiles();
 app.UseAuthentication();
 app.UseRouting();
+app.UseAuthorization();
 
 // All API endpoints here
 app.UseEndpoints(endpoints =>

@@ -3,11 +3,14 @@ using crypto_stocks.Helpers;
 using crypto_stocks.DTO;
 using crypto_stocks.Entities;
 using crypto_stocks.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace crypto_stocks.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class StocksController : ControllerBase
 {
     private readonly DataContext db;

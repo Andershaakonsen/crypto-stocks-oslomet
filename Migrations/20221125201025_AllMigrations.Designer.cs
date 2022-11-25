@@ -11,8 +11,8 @@ using crypto_stocks.Helpers;
 namespace crypto_stocks.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221029000306_AddMode")]
-    partial class AddMode
+    [Migration("20221125201025_AllMigrations")]
+    partial class AllMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,10 +31,6 @@ namespace crypto_stocks.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Mode")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Symbol")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -51,10 +47,6 @@ namespace crypto_stocks.Migrations
                     b.Property<int>("WalletId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("status")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
@@ -70,7 +62,13 @@ namespace crypto_stocks.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -82,7 +80,9 @@ namespace crypto_stocks.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "John Doe"
+                            Email = "john@doe.com",
+                            Password = "password",
+                            UserName = "johndoe"
                         });
                 });
 
@@ -119,7 +119,7 @@ namespace crypto_stocks.Migrations
                         .IsRequired();
 
                     b.HasOne("crypto_stocks.Entities.Wallet", "Wallet")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("WalletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -145,6 +145,11 @@ namespace crypto_stocks.Migrations
                     b.Navigation("Transactions");
 
                     b.Navigation("Wallets");
+                });
+
+            modelBuilder.Entity("crypto_stocks.Entities.Wallet", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,9 +1,13 @@
 import { Button } from "components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField } from "../../components/Input";
 import { Text } from "components";
 import { useForm } from "react-hook-form";
 import { useToast } from "context/ToastContext";
+import { FetchError, ofetch } from "ofetch";
+import useSWRMutation from "swr/mutation";
+import { useAuth } from "./AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 interface User {
     email: string;
@@ -12,23 +16,52 @@ interface User {
     confirmPassword?: string;
 }
 
+interface AuthResponse {
+    data: string;
+}
+
 const LoginPage = () => {
+    const navigate = useNavigate();
     const Toast = useToast();
-    const [displayLogin, setDisplayLogin] = useState(false);
+    const { login, user } = useAuth();
+    const [displayLogin, setDisplayLogin] = useState(true);
     const {
         register,
         handleSubmit,
-        formState: { errors, isValid },
+        formState: { errors },
         watch,
     } = useForm<User>();
 
-    const onSubmit = (data: User) => {
-        if (displayLogin) {
+    const onSubmit = async (data: User) => {
+        try {
             //Login method
-            return;
+            if (displayLogin) {
+                await login(data.email, data.password);
+                return;
+            }
+
+            //Register
+            await ofetch("/api/Auth/register", {
+                method: "POST",
+                body: {
+                    email: data.email,
+                    password: data.password,
+                    username: data.username,
+                },
+            });
+
+            Toast.success("User created, you can now login :)");
+        } catch (error) {
+            if (error instanceof FetchError) {
+                Toast.error(error.data?.message);
+                console.log(error.data);
+            }
         }
-        //Register
     };
+
+    useEffect(() => {
+        if (user) navigate("/");
+    }, [user]);
 
     return (
         <div className="grid place-items-center h-screen">
@@ -59,7 +92,7 @@ const LoginPage = () => {
                                 required: "Password is required",
                             })}
                         />
-                        <Button disabled={!isValid} size="sm" className="mt-4">
+                        <Button size="sm" className="mt-4">
                             Log In
                         </Button>
                     </>
@@ -118,7 +151,7 @@ const LoginPage = () => {
                             })}
                         />
 
-                        <Button disabled={!isValid} size="sm" className="mt-4">
+                        <Button size="sm" className="mt-4">
                             Register
                         </Button>
                     </>

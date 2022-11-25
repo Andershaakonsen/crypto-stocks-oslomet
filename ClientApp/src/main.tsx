@@ -1,11 +1,12 @@
 import "./style.scss";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { RouterProvider } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { SWRConfig } from "swr";
 import { ofetch } from "ofetch";
-import { router } from "Routes";
+import { Router } from "Routes";
 import Header from "components/Header";
+import AuthProvider from "features/auth/AuthProvider";
 
 // Create a global fetcher for SWR using ofetch library (modified fetch wrapper)
 const fetcher = (url: string) => ofetch(url);
@@ -13,8 +14,11 @@ const fetcher = (url: string) => ofetch(url);
 const Main = () => (
     <React.StrictMode>
         <SWRConfig value={{ fetcher }}>
-            <Header />
-            <RouterProvider router={router} />
+            <AuthProvider>
+                <BrowserRouter>
+                    <Router />
+                </BrowserRouter>
+            </AuthProvider>
         </SWRConfig>
     </React.StrictMode>
 );

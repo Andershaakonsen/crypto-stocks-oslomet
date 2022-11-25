@@ -234,3 +234,5 @@ _Pvt_Extensions
 wwwroot
 
 .env
+LocalDatabase.db-shm
+LocalDatabase.db-wal

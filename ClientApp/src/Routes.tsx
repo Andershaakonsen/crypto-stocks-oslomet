@@ -1,13 +1,9 @@
 import { Button } from "components";
 import UIPreview from "components/design-system";
 import LoginPage from "features/auth/LoginPage";
+import DashboardLayout from "features/dashboard/DashboardLayout";
 import DashboardPage from "features/dashboard/DashboardPage";
-import {
-    createBrowserRouter,
-    createRoutesFromElements,
-    Link,
-    Route,
-} from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 
 const Error = () => (
     <div className="h-screen w-full text-radix-red11 grid place-items-center">
@@ -20,13 +16,17 @@ const Error = () => (
     </div>
 );
 
-export const router = createBrowserRouter(
-    createRoutesFromElements(
-        <Route errorElement={<Error />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="design" element={<UIPreview />} />
-            <Route path="*" element={<div>404</div>} />
-        </Route>
-    )
-);
+export const Router = () => {
+    return (
+        <Routes>
+            <Route errorElement={<Error />}>
+                <Route path="/" element={<DashboardLayout />}>
+                    <Route index element={<DashboardPage />} />
+                </Route>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="design" element={<UIPreview />} />
+                <Route path="*" element={<div>404</div>} />
+            </Route>
+        </Routes>
+    );
+};

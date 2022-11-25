@@ -6,7 +6,10 @@ const Sidebar = () => {
             {/* Add backdrop-blur to div under*/}
             <div className="market-unselected absolute top-14 bg-slate-500 bg-opacity-20 h-[calc(100%_-_3.5rem)] w-full z-50">
                 <div className="flex flex-col items-center justify-center space-y-4 h-full">
-                    <i className="gg-search" style={{ "-ggs": "3" } as any}></i>
+                    <i
+                        className="gg-search"
+                        style={{ "--ggs": "3" } as any}
+                    ></i>
                     <div className="pt-4">
                         <span className="text-radix-slate12">
                             Select a currency
@@ -21,6 +24,7 @@ const Sidebar = () => {
                         className="select-market-btn max-w-[7rem] outline-radix-blue9"
                         name="market"
                         value=""
+                        onChange={() => {}}
                     >
                         <option disabled value="">
                             Select Market
@@ -78,6 +82,7 @@ const Sidebar = () => {
                             <select
                                 className="bg-transparent border-l border-l-radix-slate1 h-full px-2 hover:bg-radix-slate6"
                                 value="USDT"
+                                onChange={() => {}}
                             >
                                 <option value="USDT">USDT</option>
                                 <option disabled></option>

@@ -2,7 +2,8 @@ import { classed } from "@tw-classed/react";
 
 export const Button = classed(
     "button",
-    "flex items-center justify-center border border-transparent rounded transition-all disabled:!bg-radix-slate4 disabled:text-radix-slate6 disabled:cursor-not-allowed",
+    "flex items-center justify-center border border-transparent rounded transition-all",
+    "disabled:!bg-radix-slate4 disabled:!text-radix-slate10 disabled:!border-radix-slate6 disabled:cursor-not-allowed",
     {
         variants: {
             size: {
