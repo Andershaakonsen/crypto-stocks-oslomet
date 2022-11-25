@@ -1,4 +1,4 @@
-import classed from "@tw-classed/react";
+import { classed } from "@tw-classed/react";
 
 export const Input = classed(
     "input",
@@ -28,5 +28,5 @@ export const Input = classed(
 export const Select = classed(
     "select",
     "block bg-transparent h-full w-full border border-transparent rounded transition-all",
-    Input._def // Extend Input's style configuration
+    Input // Extend Input's style configuration
 );

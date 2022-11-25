@@ -1,4 +1,7 @@
+using crypto_stocks.Entities;
 using crypto_stocks.Helpers;
+using Microsoft.AspNetCore.Identity;
+// using identity
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
 
     // add db context
     services.AddDbContext<DataContext>();
+    // Initialize auth
+    services.AddAuthentication();
+    services.AddIdentity<Auth, IdentityRole>(o =>
+    {
+        o.Password.RequireDigit = false;
+        o.Password.RequireLowercase = false;
+        o.Password.RequireNonAlphanumeric = false;
+        o.Password.RequireUppercase = false;
+        o.User.RequireUniqueEmail = true;
+    }).AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
 }
+
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddResponseCaching(); // Add response caching to not drain coinbase API key limits
@@ -33,9 +47,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseResponseCaching(); // https://learn.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-6.0
 app.UseStaticFiles();
+app.UseAuthentication();
 app.UseRouting();
 
 // All API endpoints here

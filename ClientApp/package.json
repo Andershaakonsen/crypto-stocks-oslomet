@@ -27,7 +27,7 @@
         "vite-tsconfig-paths": "^3.5.2"
     },
     "dependencies": {
-        "@tw-classed/react": "1.0.0-alpha.4",
+        "@tw-classed/react": "1.2.1",
         "css.gg": "^2.0.0",
         "notyf": "^3.10.0",
         "ofetch": "^1.0.0",

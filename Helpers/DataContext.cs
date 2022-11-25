@@ -1,9 +1,9 @@
 namespace crypto_stocks.Helpers;
 using crypto_stocks.Entities;
-
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class DataContext : DbContext
+public class DataContext : IdentityDbContext<Auth>
 {
     protected readonly IConfiguration Configuration;
 
@@ -20,6 +20,7 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         // create a unique index on the user name
         modelBuilder.Entity<User>().HasData(new { Id = 1, Name = "John Doe" });
     }

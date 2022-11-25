@@ -3,7 +3,6 @@ using crypto_stocks.Helpers;
 using crypto_stocks.DTO;
 using crypto_stocks.Entities;
 using crypto_stocks.Services;
-using Newtonsoft.Json;
 
 namespace crypto_stocks.Controllers;
 

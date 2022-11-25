@@ -1,4 +1,4 @@
-import classed from "@tw-classed/react";
+import { classed } from "@tw-classed/react";
 import { Button } from "./Button";
 import { Input, Select } from "./Input";
 
