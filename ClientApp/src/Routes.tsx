@@ -1,5 +1,6 @@
 import { Button } from "components";
 import UIPreview from "components/design-system";
+import LoginPage from "features/auth/LoginPage";
 import DashboardPage from "features/dashboard/DashboardPage";
 import {
     createBrowserRouter,
@@ -22,6 +23,7 @@ const Error = () => (
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route errorElement={<Error />}>
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/" element={<DashboardPage />} />
             <Route path="design" element={<UIPreview />} />
             <Route path="*" element={<div>404</div>} />
