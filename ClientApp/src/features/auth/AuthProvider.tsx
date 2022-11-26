@@ -1,5 +1,5 @@
 import { ofetch } from "ofetch";
-import React, { createContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import useSWR from "swr";
 
 type Props = {
@@ -74,7 +74,6 @@ const AuthProvider = ({ children }: Props) => {
     );
 
     const loading = !user && !error;
-    console.log(user);
     return (
         <AuthContext.Provider
             value={{

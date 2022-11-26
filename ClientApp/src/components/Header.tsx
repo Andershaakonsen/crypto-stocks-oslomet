@@ -1,8 +1,10 @@
 import { useAuth } from "features/auth/AuthProvider";
+import { useToggleTheme } from "features/auth/ThemeProvider";
 import { Button } from "./Button";
 
 const Header = () => {
     const { logout } = useAuth();
+    const toggle = useToggleTheme();
     return (
         <header className="h-14 border-b border-radix-slate6 flex items-center justify-between px-4">
             <div className="flex items-center">
@@ -15,8 +17,9 @@ const Header = () => {
                 </Button>
 
                 <button
+                    onClick={toggle}
                     className="bg-radix-slate3 text-radix-slate12 rounded-full px-1 py-1"
-                    // style={{ "--ggs": "0.7" } as any}
+                    style={{ "--ggs": "0.7" } as any}
                 >
                     <i className="gg-sun" />
                 </button>

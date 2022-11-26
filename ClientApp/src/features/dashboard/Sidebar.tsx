@@ -1,37 +1,50 @@
 import Details from "components/Details";
+import { useMemo, useState } from "react";
+import { CgSpinner } from "react-icons/cg";
+import { dashboardState, useDashboard } from "./dashboard.state";
+import { useStocks, useWallets } from "./hooks";
+
+const Loading = () => {
+    return (
+        <aside className="left-sidebar relative">
+            <div className="absolute-center">
+                <CgSpinner size="2rem" className="animate-spin" />
+            </div>
+        </aside>
+    );
+};
 
 const Sidebar = () => {
+    const { data: stocks, isLoading } = useStocks();
+    const selected = useDashboard().selected;
+    const { data: wallets, isLoading: walletLoading } = useWallets();
+
+    const currency = useMemo(() => {
+        return stocks?.find((s: any) => s.symbol === selected);
+    }, [selected, stocks]);
+
+    if (isLoading || walletLoading) return <Loading />;
+
     return (
         <aside className="left-sidebar relative">
             {/* Add backdrop-blur to div under*/}
-            <div className="market-unselected absolute top-14 bg-slate-500 bg-opacity-20 h-[calc(100%_-_3.5rem)] w-full z-50">
-                <div className="flex flex-col items-center justify-center space-y-4 h-full">
-                    <i
-                        className="gg-search"
-                        style={{ "--ggs": "3" } as any}
-                    ></i>
-                    <div className="pt-4">
-                        <span className="text-radix-slate12">
-                            Select a currency
-                        </span>
+            {!currency && (
+                <div className="market-unselected absolute top-14 bg-black bg-opacity-40 backdrop-blur h-[calc(100%_-_3.5rem)] w-full z-50">
+                    <div className="flex flex-col items-center justify-center space-y-4 h-full">
+                        <i
+                            className="gg-search"
+                            style={{ "--ggs": "3" } as any}
+                        ></i>
+                        <div className="pt-4">
+                            <span className="text-radix-slate12">
+                                Select a currency
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
             {/* SELCT MARKET START */}
-            <section className="h-14 shrink-0 border-b border-radix-slate6 sticky top-0 bg-radix-slate1 z-10">
-                <div className="flex h-full items-center justify-between text-sm ">
-                    <select
-                        className="select-market-btn max-w-[7rem] outline-radix-blue9"
-                        name="market"
-                        value=""
-                        onChange={() => {}}
-                    >
-                        <option disabled value="">
-                            Select Market
-                        </option>
-                    </select>
-                </div>
-            </section>
+            <MarketSelector />
             {/* WALLET BALANCE START */}
             <Details title="Wallet Balance">
                 <section className="panel py-1">
@@ -109,3 +122,29 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+const MarketSelector = () => {
+    const { data: stocks, isLoading } = useStocks();
+    const selected = useDashboard().selected;
+    return (
+        <section className="h-14 shrink-0 border-b border-radix-slate6 sticky top-0 bg-radix-slate1 z-10">
+            <div className="flex h-full items-center justify-between text-sm ">
+                <select
+                    className="select-market-btn max-w-[7rem] outline-radix-blue9"
+                    name="market"
+                    value={selected}
+                    onChange={(e) => (dashboardState.selected = e.target.value)}
+                >
+                    <option disabled value="">
+                        Select Market
+                    </option>
+                    {stocks?.map((stock: any) => (
+                        <option key={stock.id} value={stock.symbol}>
+                            {stock.name} ({stock.symbol})
+                        </option>
+                    ))}
+                </select>
+            </div>
+        </section>
+    );
+};

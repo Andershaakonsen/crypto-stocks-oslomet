@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useEffect, useState } from "react";
+import React, {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 
 interface IThemeContext {
     theme: "dark" | "light";
@@ -10,8 +16,8 @@ const ThemeContext = createContext<IThemeContext>(null!);
 
 const ThemeProvider = ({
     children,
-    defaultTheme,
-}: React.PropsWithChildren<{ defaultTheme: "dark" | "light" }>) => {
+    defaultTheme = "dark",
+}: React.PropsWithChildren<{ defaultTheme?: "dark" | "light" }>) => {
     const [theme, setTheme] = useState<"dark" | "light">(() => {
         const localTheme = localStorage.getItem("theme");
         if (localTheme) {
@@ -22,6 +28,10 @@ const ThemeProvider = ({
 
     useEffect(() => {
         localStorage.setItem("theme", theme);
+    }, [theme]);
+
+    useEffect(() => {
+        document.documentElement.className = theme;
     }, [theme]);
 
     const toggleTheme = useCallback(() => {
@@ -36,3 +46,9 @@ const ThemeProvider = ({
 };
 
 export default ThemeProvider;
+
+export const useThemeContext = () => useContext(ThemeContext);
+
+export const useTheme = () => useThemeContext().theme;
+
+export const useToggleTheme = () => useThemeContext().toggleTheme;
