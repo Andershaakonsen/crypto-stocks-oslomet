@@ -19,6 +19,11 @@ body {
     color-scheme: dark;
 }
 
+#advanced-chart-widget-container {
+    width: 100%;
+    height: 100%;
+}
+
 .dashboard {
     --ggs: 0.7;
     display: grid;

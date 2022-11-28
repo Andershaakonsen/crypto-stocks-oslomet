@@ -23,6 +23,7 @@ specifiers:
   react-hook-form: ^7.39.4
   react-icons: ^4.6.0
   react-router-dom: ^6.4.3
+  react-tradingview-embed: ^3.0.6
   sass: ^1.56.1
   swr: 2.0.0-rc.0
   tailwindcss: ^3.2.4
@@ -46,6 +47,7 @@ dependencies:
   react-hook-form: 7.39.4_react@18.2.0
   react-icons: 4.6.0_react@18.2.0
   react-router-dom: 6.4.3_biqbaboplfbrettd7655fr4n2y
+  react-tradingview-embed: 3.0.6_biqbaboplfbrettd7655fr4n2y
   swr: 2.0.0-rc.0_react@18.2.0
   valtio: 1.7.6_react@18.2.0+vite@3.2.4
   vite-plugin-swc-react-refresh: 2.2.1_vite@3.2.4
@@ -3027,6 +3029,16 @@ packages:
       invariant: 2.2.4
       react: 18.2.0
       tslib: 2.4.1
+    dev: false
+
+  /react-tradingview-embed/3.0.6_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-1qClGqBHOi7mvRFvhBxXSoyoPrNR8aPi/yfF/mYt8EWStA8LoWBl9ufemCyG+mc61iPmNGjJla0XB00FPENaPg==}
+    peerDependencies:
+      react: '>= 16.8.0'
+      react-dom: '>= 16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react/18.2.0:
