@@ -1,7 +1,7 @@
 // import { useStocks } from "./hooks";
 
+import OrderHistory from "features/order/OrderHistory";
 import CoinDisplay from "./CoinDisplay";
-import OrderHistory from "./OrderHistory";
 import Sidebar from "./sidebar/Sidebar";
 
 const DashboardPage = () => {

@@ -1,21 +1,20 @@
 import { useDashboard } from "./dashboard.state";
-import { useStocks } from "./hooks";
 
 interface Props {}
 
 // When done with getting selected currenc. CReate reusable hook for selected currency
 
 const CoinDisplay = () => {
-    const { data: stocks } = useStocks();
     const { selected } = useDashboard();
 
     return (
-        <main className="pt-4 pl-2">
-            <h2>
-                Current Price: <span className="font-bold"></span>$
-            </h2>
-            <h3>24h change</h3>
-            <p className="text-radix-slate11">last updated</p>
+        <main>
+            <iframe
+                src={`https://bit2me.com/widget/chart/v1?currency=${
+                    selected || "BTC"
+                }&fiat=USDT`}
+                className="block w-full h-full m-auto dark:invert "
+            ></iframe>
         </main>
     );
 };
