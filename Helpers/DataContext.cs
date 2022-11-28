@@ -20,8 +20,6 @@ public class DataContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        // create a unique index on the user name
-        modelBuilder.Entity<User>().HasData(new { Id = 1, UserName = "johndoe", Email = "john@doe.com", Password = "password" });
     }
 
     public DbSet<User> Users { get; set; }

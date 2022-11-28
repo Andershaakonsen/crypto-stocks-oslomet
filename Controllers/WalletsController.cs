@@ -80,11 +80,10 @@ public class WalletsController : ControllerBase
 
         // Query for wallet 
         var query = from w in db.Wallets
-                    where w.UserId == withdrawal.userId
+                    where w.UserId == withdrawal.userId && w.Symbol == "USD"
                     select w;
 
         var wallet = query.FirstOrDefault<Wallet>();
-
         // If wallet does not exist, respond with not found
         if (wallet == null)
         {
@@ -97,8 +96,9 @@ public class WalletsController : ControllerBase
             return BadRequest(new { message = "Insufficient funds to withdraw", code = Codes.INSUFFICIENT_FUNDS });
         }
 
-
+        System.Console.WriteLine(wallet.Balance);
         wallet.Balance -= withdrawal.amount;
+        System.Console.WriteLine(wallet.Balance);
 
 
         var result = await db.SaveChangesAsync();

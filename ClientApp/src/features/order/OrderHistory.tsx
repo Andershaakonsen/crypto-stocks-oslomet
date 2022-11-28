@@ -1,30 +1,13 @@
 import { Button } from "components";
 import { Transaction } from "types/api";
 import { useOrders } from "../dashboard/hooks";
+import OrderActions from "./OrderActions";
 import { OrderItem } from "./OrderItem";
 
 interface Props {}
 
 const OrderHistory = ({}: Props) => {
     const { data: orders } = useOrders(3);
-    const fakeOrders: Transaction[] = [
-        {
-            id: 1,
-            symbol: "BTC",
-            amount: 30000,
-            units: 2,
-            userId: 3,
-            createdAt: new Date().toISOString(),
-        },
-        {
-            id: 2,
-            symbol: "ETH",
-            amount: 10000,
-            units: 1,
-            userId: 2,
-            createdAt: new Date().toISOString(),
-        },
-    ];
 
     return (
         <footer className="overflow-y-auto">
@@ -43,7 +26,9 @@ const OrderHistory = ({}: Props) => {
             </div>
             <ul>
                 {orders?.map((order) => (
-                    <OrderItem key={order.id} order={order} />
+                    <OrderItem key={order.id} order={order}>
+                        <OrderActions orderId={order.id} />
+                    </OrderItem>
                 ))}
                 <li className="text-center text-radix-slate11">
                     No orders made yet.

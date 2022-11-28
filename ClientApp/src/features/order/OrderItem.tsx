@@ -3,10 +3,12 @@ import { formatUSD } from "utils/format";
 
 interface OrderItemProps {
     order: Transaction;
+    children?: React.ReactNode;
 }
 // Add OrderItem here!
 export const OrderItem = ({
     order: { id, symbol, amount, units, userId, createdAt },
+    children,
 }: OrderItemProps) => {
     //bottom of li
     // <div>${children}</div>
@@ -32,6 +34,7 @@ export const OrderItem = ({
                     {new Date(createdAt).toLocaleString("nb-NO")}
                 </span>
             </div>
+            <div>{children}</div>
         </li>
     );
 };

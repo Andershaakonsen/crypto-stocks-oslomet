@@ -1,29 +1,9 @@
 import Header from "components/Header";
 import { useOrders } from "features/dashboard/hooks";
 import { OrderItem } from "features/order/OrderItem";
-import { Transaction } from "types/api";
 
 const HistoryPage = () => {
-    // const { data: orders } = useOrders();
-    const fakeOrders: Transaction[] = [
-        {
-            id: 1,
-            symbol: "BTC",
-            amount: 30000,
-            units: 2,
-            userId: 3,
-            createdAt: new Date().toISOString(),
-        },
-        {
-            id: 2,
-            symbol: "ETH",
-            amount: 10000,
-            units: 1,
-            userId: 2,
-            createdAt: new Date().toISOString(),
-        },
-    ];
-
+    const { data: orders } = useOrders(100);
     return (
         <>
             <Header />
@@ -49,22 +29,9 @@ const HistoryPage = () => {
                     <span className="px-3 slate-border"></span>
                 </div>
                 <ul className="slate-border border" data-js="order-list">
-                    <li className="px-4 py-3 border-b slate-border hover:bg-radix-slate2 last:border-none grid grid-cols-5">
-                        <div className="flex items-center space-x-2 text-radix-slate11 font-medium">
-                            <span className="h-full w-1 block bg-radix-green9"></span>
-                            <span>BUY</span>
-                        </div>
-                    </li>
-
-                    {fakeOrders?.map((order) => (
+                    {orders?.map((order) => (
                         <OrderItem key={order.id} order={order} />
                     ))}
-                    <li className="px-4 py-3 border-b slate-border last:border-none grid grid-cols-4">
-                        <div className="flex items-center space-x-2 text-radix-slate11 font-medium">
-                            <span className="h-full w-1 block bg-radix-red9"></span>
-                            <span>SELL</span>
-                        </div>
-                    </li>
                 </ul>
             </main>
         </>

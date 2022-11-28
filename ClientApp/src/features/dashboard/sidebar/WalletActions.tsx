@@ -1,12 +1,9 @@
-import { DialogClose } from "@radix-ui/react-dialog";
 import { classed } from "@tw-classed/react";
 import { Button, TextField } from "components";
 import { Dialog, DialogDescription, DialogTitle } from "components/dialog";
 import { useToast } from "context/ToastContext";
-import { FetchError } from "ofetch";
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { CgSpinner } from "react-icons/cg";
 import { useDeposit, useWithdraw } from "../hooks";
 
 const WalletActions = () => {
@@ -25,7 +22,7 @@ interface FormData {
 }
 
 const DepositModal = ({}) => {
-    const { trigger, error, isMutating } = useDeposit();
+    const { trigger, error, isMutating, reset } = useDeposit();
     const [open, setOpen] = useState(false);
     const toast = useToast();
     const {
@@ -59,7 +56,8 @@ const DepositModal = ({}) => {
             </DialogDescription>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
-                    error={errors.amount?.message || error?.message}
+                    error={errors.amount?.message || error?.data?.message}
+                    onInput={reset}
                     {...register("amount", {
                         required: "Please enter an amount",
                         valueAsNumber: true,
@@ -80,7 +78,7 @@ const DepositModal = ({}) => {
 };
 
 const WithdrawModal = () => {
-    const { trigger, error, isMutating } = useWithdraw();
+    const { trigger, error, isMutating, reset } = useWithdraw();
     const toast = useToast();
     const [open, setOpen] = useState(false);
     const {
@@ -113,7 +111,8 @@ const WithdrawModal = () => {
             </DialogDescription>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
-                    error={errors.amount?.message || error?.message}
+                    onInput={reset}
+                    error={errors.amount?.message || error?.data?.message}
                     {...register("amount", {
                         required: "Please enter an amount",
                         valueAsNumber: true,

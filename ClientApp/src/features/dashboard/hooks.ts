@@ -13,7 +13,7 @@ import { mutate } from "swr";
 import { useDashboard } from "./dashboard.state";
 import { useMemo } from "react";
 
-export const useStocks = () => useSWRAuth<Stock[]>("/api/Stocks");
+export const useStocks = () => useSWRAuth<Stock[]>("/api/Stocks/currencies");
 
 export const useSelectedCurrency = () => {
     const selected = useDashboard().selected;
@@ -45,16 +45,16 @@ useWallets.key = (userId: number) => ({
     query: { userId },
 });
 
-export const useOrders = (limit: number = 10) => {
+export const useOrders = (limit: number = 3) => {
     const user = useUser();
     return useSWRAuth<Transaction[]>({
-        url: "/api/Stocks/transactions",
+        url: "/api/Stocks",
         query: { userId: user?.id, limit },
     });
 };
 
-useOrders.key = (userId: number, limit: number = 10) => ({
-    url: "/api/Orders",
+useOrders.key = (userId: number, limit: number = 3) => ({
+    url: "/api/Stocks",
     query: { userId, limit },
 });
 

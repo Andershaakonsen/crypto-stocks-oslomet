@@ -1,4 +1,3 @@
-import { useLayoutEffect, useRef } from "react";
 import { useDashboard } from "./dashboard.state";
 import { AdvancedChart } from "react-tradingview-embed";
 import { useTheme } from "features/auth/ThemeProvider";
@@ -10,8 +9,6 @@ interface Props {}
 const CoinDisplay = () => {
     const { selected } = useDashboard();
     const theme = useTheme();
-
-    //doge
 
     return (
         <main>
