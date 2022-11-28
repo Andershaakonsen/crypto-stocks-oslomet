@@ -1,5 +1,6 @@
 import { useAuth } from "features/auth/AuthProvider";
 import { useToggleTheme } from "features/auth/ThemeProvider";
+import { Link } from "react-router-dom";
 import { Button } from "./Button";
 
 const Header = () => {
@@ -7,10 +8,10 @@ const Header = () => {
     const toggle = useToggleTheme();
     return (
         <header className="h-14 border-b border-radix-slate6 flex items-center justify-between px-4">
-            <div className="flex items-center">
+            <Link to="/" className="flex items-center">
                 <i className="gg-dollar"></i>
                 <span className="ml-4">MetFinance</span>
-            </div>
+            </Link>
             <div className="flex items-center gap-4">
                 <Button onClick={() => logout()} size="sm" color="ghostSlate">
                     Logout

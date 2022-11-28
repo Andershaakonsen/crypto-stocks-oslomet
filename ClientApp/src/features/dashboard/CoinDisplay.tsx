@@ -1,5 +1,7 @@
 import { useLayoutEffect, useRef } from "react";
 import { useDashboard } from "./dashboard.state";
+import { AdvancedChart } from "react-tradingview-embed";
+import { useTheme } from "features/auth/ThemeProvider";
 
 interface Props {}
 
@@ -7,23 +9,26 @@ interface Props {}
 
 const CoinDisplay = () => {
     const { selected } = useDashboard();
-    const iframeRef = useRef<HTMLIFrameElement>(null);
+    const theme = useTheme();
 
-    useLayoutEffect(() => {
-        const w = iframeRef.current?.contentWindow;
-        if (!w) return;
-
-        (w as any).console.log = () => {};
-    }, []);
+    //doge
 
     return (
         <main>
-            <iframe
-                ref={iframeRef}
-                src={`https://bit2me.com/widget/chart/v1?currency=${
-                    selected || "BTC"
-                }&fiat=USDT`}
-                className="block w-full h-full m-auto dark:invert "
+            <AdvancedChart
+                widgetProps={{
+                    autosize: true,
+                    symbol:
+                        selected === "USDT"
+                            ? "CRYPTOCAP:USDT"
+                            : selected === "USDC"
+                            ? "CRYPTOCAP:USDC"
+                            : `BINANCE:${selected}USDT`,
+                    theme: theme,
+                    hide_side_toolbar: true,
+                    timezone: "Europe/Amsterdam",
+                    allow_symbol_change: false,
+                }}
             />
         </main>
     );
