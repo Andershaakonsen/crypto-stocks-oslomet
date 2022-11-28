@@ -1,15 +1,11 @@
-import { ofetch } from "ofetch";
-import React, { createContext, useEffect, useState } from "react";
+import { FetchError, ofetch } from "ofetch";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
+import type { User } from "types/api";
 
 type Props = {
     children: React.ReactNode;
 };
-
-export interface User {
-    uid: number;
-    email: string;
-}
 
 export interface AuthContext {
     accessToken: string | null;
@@ -70,7 +66,17 @@ const AuthProvider = ({ children }: Props) => {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
-            }).then((res) => res.data)
+            }).then((res) => res.data),
+        {
+            onError(err) {
+                if (err instanceof FetchError) {
+                    // API Returned 401 Unauthorized - Token is invalid, wipe it.
+                    if (err.status === 401) {
+                        logout();
+                    }
+                }
+            },
+        }
     );
 
     const loading = !user && !error;
@@ -94,7 +100,7 @@ export default AuthProvider;
 // Helpers
 
 export const useAuth = () => {
-    const context = React.useContext(AuthContext);
+    const context = useContext(AuthContext);
     if (context === undefined) {
         throw new Error("useAuth must be used within a AuthProvider");
     }

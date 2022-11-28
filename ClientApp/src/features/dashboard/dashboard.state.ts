@@ -1,4 +1,3 @@
-import { Stock } from "types/api";
 import { proxy, useSnapshot } from "valtio";
 
 interface DashboardState {

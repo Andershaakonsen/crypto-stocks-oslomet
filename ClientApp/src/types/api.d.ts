@@ -38,3 +38,29 @@ export interface Usd {
     tvl: null;
     last_updated: Date;
 }
+
+export interface Wallet {
+    id: number;
+    balance: number;
+    symbol: string;
+    userId: number;
+    user?: User["id"];
+    transactions: Transaction[];
+}
+
+export interface Transaction {
+    id: number;
+    symbol: string;
+    amount: number;
+    units: number;
+    userId: User["id"];
+    user?: User;
+}
+
+export interface User {
+    id: number;
+    username: string;
+    email: string;
+    wallets?: Wallet[];
+    transactions?: Transaction[];
+}
