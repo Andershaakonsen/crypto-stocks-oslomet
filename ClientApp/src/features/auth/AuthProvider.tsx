@@ -108,3 +108,4 @@ export const useAuth = () => {
 };
 
 export const useUser = () => useAuth().user;
+export const useAccessToken = () => useAuth().accessToken;

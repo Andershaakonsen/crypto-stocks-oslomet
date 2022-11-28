@@ -2,6 +2,7 @@ import { swcReactRefresh } from "vite-plugin-swc-react-refresh";
 import mkcert from "vite-plugin-mkcert";
 import tsconfigPaths from "vite-tsconfig-paths";
 import https from "node:https";
+import svgr from "vite-plugin-svgr";
 
 /** @type {import('vite').UserConfig["build"]} */
 const build = {
@@ -29,5 +30,5 @@ export default {
     esbuild: {
         jsx: "automatic",
     },
-    plugins: [tsconfigPaths(), swcReactRefresh(), mkcert()],
+    plugins: [tsconfigPaths(), swcReactRefresh(), svgr(), mkcert()],
 };

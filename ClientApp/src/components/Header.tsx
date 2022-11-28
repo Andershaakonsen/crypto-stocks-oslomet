@@ -12,7 +12,7 @@ const Header = () => {
                 <span className="ml-4">MetFinance</span>
             </div>
             <div className="flex items-center gap-4">
-                <Button onClick={() => logout()} size="sm" color="slate">
+                <Button onClick={() => logout()} size="sm" color="ghostSlate">
                     Logout
                 </Button>
 

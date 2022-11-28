@@ -2,7 +2,7 @@
 
 import CoinDisplay from "./CoinDisplay";
 import OrderHistory from "./OrderHistory";
-import Sidebar from "./Sidebar";
+import Sidebar from "./sidebar/Sidebar";
 
 const DashboardPage = () => {
     return (

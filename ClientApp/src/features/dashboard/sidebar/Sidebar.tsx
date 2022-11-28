@@ -1,8 +1,9 @@
 import Details from "components/Details";
-import { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
-import { dashboardState, useDashboard } from "./dashboard.state";
-import { useStocks, useWallets } from "./hooks";
+import { dashboardState, useDashboard } from "../dashboard.state";
+import { useStocks, useWallets } from "../hooks";
+import WalletActions from "./WalletActions";
 
 const Loading = () => {
     return (
@@ -27,26 +28,9 @@ const Sidebar = () => {
 
     return (
         <aside className="left-sidebar relative">
-            {/* Add backdrop-blur to div under*/}
-            {!currency && (
-                <div className="market-unselected absolute top-14 bg-black bg-opacity-40 backdrop-blur h-[calc(100%_-_3.5rem)] w-full z-50">
-                    <div className="flex flex-col items-center justify-center space-y-4 h-full">
-                        <i
-                            className="gg-search"
-                            style={{ "--ggs": "3" } as any}
-                        ></i>
-                        <div className="pt-4">
-                            <span className="text-radix-slate12">
-                                Select a currency
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            )}
-            {/* SELCT MARKET START */}
+            {!currency && <NoSelectPlaceholder />}
             <MarketSelector />
-            {/* WALLET BALANCE START */}
-            <Details title="Wallet Balance">
+            <Details defaultOpen title="Wallet Balance">
                 <section className="panel py-1">
                     <div className="flex items-center justify-between">
                         <span className="text-radix-slate11">Asset</span>
@@ -55,21 +39,24 @@ const Sidebar = () => {
                 </section>
                 <section className="panel py-6">
                     <ul className="space-y-4 max-h-[200px] overflow-y-auto">
-                        <li className="flex items-center justify-between">
-                            <span className="">USDT</span>
-                            <span className="font-medium">0.00</span>
-                        </li>
+                        {!wallets?.length && (
+                            <li className="text-center text-radix-slate11">
+                                No wallets found. Please deposit funds.
+                            </li>
+                        )}
+                        {wallets?.map((wallet) => (
+                            <li
+                                key={wallet.id}
+                                className="flex items-center justify-between"
+                            >
+                                <span className="">{wallet.symbol}</span>
+                                <span className="font-medium">
+                                    {wallet.balance}
+                                </span>
+                            </li>
+                        ))}
                     </ul>
-                    <div className="mt-4 flex items-center gap-3">
-                        <button className="h-14 px-3 flex space-x-3 items-center border slate-border-int text-radix-slate11 hover:text-radix-slate12">
-                            <i className="gg-arrow-down-o"></i>
-                            <span>Deposit</span>
-                        </button>
-                        <button className="h-14 px-3 flex space-x-3 items-center border slate-border-int text-radix-slate11 hover:text-radix-slate12">
-                            <i className="gg-arrow-down-o"></i>
-                            <span>Withdraw</span>
-                        </button>
-                    </div>
+                    <WalletActions />
                 </section>
             </Details>
 
@@ -128,7 +115,8 @@ const MarketSelector = () => {
     const selected = useDashboard().selected;
     return (
         <section className="h-14 shrink-0 border-b border-radix-slate6 sticky top-0 bg-radix-slate1 z-10">
-            <div className="flex h-full items-center justify-between text-sm ">
+            <div className="flex h-full items-center justify-between text-sm gap-4">
+                {selected && <Coin symbol={selected} />}
                 <select
                     className="select-market-btn max-w-[7rem] outline-radix-blue9"
                     name="market"
@@ -148,3 +136,37 @@ const MarketSelector = () => {
         </section>
     );
 };
+
+const Coin = ({ symbol = "X" }) => {
+    const [Component, setComponent] = useState<null | React.FC<
+        React.SVGProps<SVGElement>
+    >>(null);
+
+    const lower = symbol.toLowerCase();
+
+    const actualSymbol = lower === "busd" ? "bnb" : lower;
+
+    // Dynamically import the coin image
+    useEffect(() => {
+        import(`../../../../assets/crypto-svg/${actualSymbol}.svg`)
+            .then((img) => {
+                setComponent(() => img.ReactComponent);
+            })
+            .catch((e) => {
+                console.log(e);
+                setComponent(null);
+            });
+    }, [actualSymbol]);
+    return <>{Component && <Component className="h-8 w-8" />}</>;
+};
+
+const NoSelectPlaceholder = () => (
+    <div className="market-unselected absolute top-14 bg-black bg-opacity-40 backdrop-blur h-[calc(100%_-_3.5rem)] w-full z-50">
+        <div className="flex flex-col items-center justify-center space-y-4 h-full">
+            <i className="gg-search" style={{ "--ggs": "3" } as any}></i>
+            <div className="pt-4">
+                <span className="text-radix-slate12">Select a currency</span>
+            </div>
+        </div>
+    </div>
+);

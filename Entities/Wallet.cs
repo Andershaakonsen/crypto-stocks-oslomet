@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace crypto_stocks.Entities;
@@ -13,6 +14,7 @@ public class Wallet
 
     public int UserId { get; set; }
 
+    [JsonIgnore]
     public User? User { get; set; }
 
     public List<Transaction>? Transactions { get; set; }
