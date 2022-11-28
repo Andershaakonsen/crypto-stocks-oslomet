@@ -1,13 +1,36 @@
 import { Button } from "components";
+import { Transaction } from "types/api";
+import { useOrders } from "../dashboard/hooks";
+import { OrderItem } from "./OrderItem";
 
 interface Props {}
 
 const OrderHistory = ({}: Props) => {
+    const { data: orders } = useOrders();
+    const fakeOrders: Transaction[] = [
+        {
+            id: 1,
+            symbol: "BTC",
+            amount: 30000,
+            units: 2,
+            userId: 3,
+            createdAt: new Date().toString(),
+        },
+        {
+            id: 2,
+            symbol: "ETH",
+            amount: 10000,
+            units: 1,
+            userId: 2,
+            createdAt: new Date().toString(),
+        },
+    ];
+
     return (
         <footer className="overflow-y-auto">
             <div className="flex items-center border-b slate-border bg-radix-slate3 h-12 px-4 justify-between ">
                 <p className="title !text-base">Order History</p>
-                <Button size="sm">
+                <Button as="a" href="/history" size="sm">
                     <i className="gg-external mr-2"></i>View All
                 </Button>
             </div>
@@ -19,6 +42,9 @@ const OrderHistory = ({}: Props) => {
                 <span className="px-3 slate-border"></span>
             </div>
             <ul>
+                {fakeOrders?.map((order) => (
+                    <OrderItem order={order} />
+                ))}
                 <li className="text-center text-radix-slate11">
                     No orders made yet.
                 </li>

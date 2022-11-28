@@ -54,6 +54,7 @@ export interface Transaction {
     amount: number;
     units: number;
     userId: User["id"];
+    createdAt: string;
     user?: User;
 }
 

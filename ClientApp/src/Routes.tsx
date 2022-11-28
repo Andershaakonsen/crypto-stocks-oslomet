@@ -3,6 +3,7 @@ import UIPreview from "components/design-system";
 import LoginPage from "features/auth/LoginPage";
 import DashboardLayout from "features/dashboard/DashboardLayout";
 import DashboardPage from "features/dashboard/DashboardPage";
+import HistoryPage from "features/history/HistoryPage";
 import { Link, Route, Routes } from "react-router-dom";
 
 const Error = () => (
@@ -26,6 +27,7 @@ export const Router = () => {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="design" element={<UIPreview />} />
                 <Route path="*" element={<div>404</div>} />
+                <Route path="/history" element={<HistoryPage />} />
             </Route>
         </Routes>
     );
