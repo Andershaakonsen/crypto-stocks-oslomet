@@ -30,6 +30,7 @@
     "dependencies": {
         "@radix-ui/react-dialog": "^1.0.2",
         "@tw-classed/react": "1.2.1",
+        "clsx": "^1.2.1",
         "cryptocurrency-icons": "^0.18.1",
         "css.gg": "^2.0.0",
         "notyf": "^3.10.0",

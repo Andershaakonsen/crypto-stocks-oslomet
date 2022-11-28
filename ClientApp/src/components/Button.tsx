@@ -1,4 +1,4 @@
-import { classed } from "@tw-classed/react";
+import { classed, ClassedComponentType } from "@tw-classed/react";
 import React, { forwardRef } from "react";
 import { CgSpinner } from "react-icons/cg";
 
@@ -45,16 +45,18 @@ const InnerContainer = classed("span", {
     },
 });
 
-export const Button: React.FC<React.ComponentProps<typeof MainButton>> =
-    forwardRef(({ loading, children, ...props }, ref) => {
-        return (
-            <MainButton ref={ref} {...props} loading={loading}>
-                {loading && (
-                    <span className="absolute-center">
-                        <CgSpinner className="animate-spin" />
-                    </span>
-                )}
-                <InnerContainer loading={loading}>{children}</InnerContainer>
-            </MainButton>
-        );
-    });
+export const Button = forwardRef<
+    HTMLButtonElement,
+    React.ComponentProps<typeof MainButton>
+>(({ loading, children, ...props }, ref) => {
+    return (
+        <MainButton ref={ref} {...props} loading={loading}>
+            {loading && (
+                <span className="absolute-center">
+                    <CgSpinner className="animate-spin" />
+                </span>
+            )}
+            <InnerContainer loading={loading}>{children}</InnerContainer>
+        </MainButton>
+    );
+}) as unknown as typeof MainButton;

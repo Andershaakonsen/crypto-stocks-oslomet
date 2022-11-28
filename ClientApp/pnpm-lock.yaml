@@ -10,6 +10,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.43.0
   '@typescript-eslint/parser': ^5.43.0
   autoprefixer: ^10.4.13
+  clsx: ^1.2.1
   cryptocurrency-icons: ^0.18.1
   css.gg: ^2.0.0
   eslint: ^8.27.0
@@ -37,6 +38,7 @@ specifiers:
 dependencies:
   '@radix-ui/react-dialog': 1.0.2_2zx2umvpluuhvlq44va5bta2da
   '@tw-classed/react': 1.2.1_react@18.2.0
+  clsx: 1.2.1
   cryptocurrency-icons: 0.18.1
   css.gg: 2.0.0
   notyf: 3.10.0
@@ -1370,6 +1372,11 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.2
+
+  /clsx/1.2.1:
+    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
+    dev: false
 
   /color-convert/1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}

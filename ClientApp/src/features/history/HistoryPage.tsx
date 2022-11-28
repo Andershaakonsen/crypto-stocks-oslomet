@@ -4,7 +4,7 @@ import { OrderItem } from "features/order/OrderItem";
 import { Transaction } from "types/api";
 
 const HistoryPage = () => {
-    const { data: orders } = useOrders();
+    // const { data: orders } = useOrders();
     const fakeOrders: Transaction[] = [
         {
             id: 1,
@@ -57,7 +57,7 @@ const HistoryPage = () => {
                     </li>
 
                     {fakeOrders?.map((order) => (
-                        <OrderItem order={order} />
+                        <OrderItem key={order.id} order={order} />
                     ))}
                     <li className="px-4 py-3 border-b slate-border last:border-none grid grid-cols-4">
                         <div className="flex items-center space-x-2 text-radix-slate11 font-medium">

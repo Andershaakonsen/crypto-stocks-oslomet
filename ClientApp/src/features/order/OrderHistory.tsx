@@ -6,7 +6,7 @@ import { OrderItem } from "./OrderItem";
 interface Props {}
 
 const OrderHistory = ({}: Props) => {
-    const { data: orders } = useOrders();
+    const { data: orders } = useOrders(3);
     const fakeOrders: Transaction[] = [
         {
             id: 1,
@@ -42,8 +42,8 @@ const OrderHistory = ({}: Props) => {
                 <span className="px-3 slate-border"></span>
             </div>
             <ul>
-                {fakeOrders?.map((order) => (
-                    <OrderItem order={order} />
+                {orders?.map((order) => (
+                    <OrderItem key={order.id} order={order} />
                 ))}
                 <li className="text-center text-radix-slate11">
                     No orders made yet.
