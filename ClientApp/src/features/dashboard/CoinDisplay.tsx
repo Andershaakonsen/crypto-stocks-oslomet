@@ -20,6 +20,8 @@ const CoinDisplay = () => {
                     symbol:
                         selected === "USDT"
                             ? "CRYPTOCAP:USDT"
+                            : selected === "USDC"
+                            ? "CRYPTOCAP:USDC"
                             : `BINANCE:${selected}USDT`,
                     theme: theme,
                     hide_side_toolbar: true,

@@ -14,7 +14,7 @@ const OrderHistory = ({}: Props) => {
             amount: 30000,
             units: 2,
             userId: 3,
-            createdAt: new Date().toString(),
+            createdAt: new Date().toISOString(),
         },
         {
             id: 2,
@@ -22,7 +22,7 @@ const OrderHistory = ({}: Props) => {
             amount: 10000,
             units: 1,
             userId: 2,
-            createdAt: new Date().toString(),
+            createdAt: new Date().toISOString(),
         },
     ];
 

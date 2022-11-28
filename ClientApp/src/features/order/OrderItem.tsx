@@ -1,4 +1,5 @@
 import { Transaction } from "types/api";
+import { formatUSD } from "utils/format";
 
 interface OrderItemProps {
     order: Transaction;
@@ -7,9 +8,6 @@ interface OrderItemProps {
 export const OrderItem = ({
     order: { id, symbol, amount, units, userId, createdAt },
 }: OrderItemProps) => {
-    const formatUSD = (amount: any) => {
-        return amount;
-    };
     //bottom of li
     // <div>${children}</div>
     return (
@@ -31,7 +29,7 @@ export const OrderItem = ({
             </div>
             <div>
                 <span className="text-radix-slate11 font-medium">
-                    {createdAt}
+                    {new Date(createdAt).toLocaleString("nb-NO")}
                 </span>
             </div>
         </li>
