@@ -1,6 +1,12 @@
+import { useDashboard } from "./dashboard.state";
+import { useStocks } from "./hooks";
+
 interface Props {}
 
 const CoinDisplay = () => {
+    const { data: stocks } = useStocks();
+    const { selected } = useDashboard();
+
     return (
         <main className="pt-4 pl-2">
             <h2>

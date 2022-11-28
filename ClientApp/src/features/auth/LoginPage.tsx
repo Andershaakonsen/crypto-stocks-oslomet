@@ -50,6 +50,7 @@ const LoginPage = () => {
                 },
             });
 
+            setDisplayLogin(true);
             Toast.success("User created, you can now login :)");
         } catch (error) {
             if (error instanceof FetchError) {
