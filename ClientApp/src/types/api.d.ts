@@ -64,3 +64,25 @@ export interface User {
     wallets?: Wallet[];
     transactions?: Transaction[];
 }
+
+export interface ResponseData<T> {
+    data: T;
+    message: string;
+    success: boolean;
+    code: string;
+}
+
+export class DepositDTO {
+    public userId: number;
+    public amount: number;
+}
+
+export class CreateOrderDTO {
+    public symbol: string;
+    public units: number;
+    public userId: number;
+}
+
+export class UpdateOrderDTO {
+    public decimal: number;
+}
