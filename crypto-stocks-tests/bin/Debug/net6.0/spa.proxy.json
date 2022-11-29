@@ -1,0 +1,8 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:3000",
+"LaunchCommand": "npm run dev",
+"WorkingDirectory": "/Users/sannajammeh/code/personal/crypto-stocks-oslomet/crypto-stocks/ClientApp/",
+"MaxTimeoutInSeconds": "120"
+}
+}
