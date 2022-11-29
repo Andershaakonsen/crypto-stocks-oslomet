@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace crypto_stocks.Entities;
 
@@ -9,6 +9,7 @@ public class User
 
     public string? Email { get; set; }
 
+    [JsonIgnore]
     public string? Password { get; set; }
 
     public List<Wallet> Wallets { get; set; }
