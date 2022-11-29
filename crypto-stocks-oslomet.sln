@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crypto-stocks", "crypto-stocks\crypto-stocks.csproj", "{75ABB4C1-401E-4366-B800-1F014FC54822}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crypto-stocks-tests", "crypto-stocks-tests\crypto-stocks-tests.csproj", "{71189CBD-7AE2-49B6-AE13-1EF0F8715B22}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75ABB4C1-401E-4366-B800-1F014FC54822}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75ABB4C1-401E-4366-B800-1F014FC54822}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75ABB4C1-401E-4366-B800-1F014FC54822}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75ABB4C1-401E-4366-B800-1F014FC54822}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71189CBD-7AE2-49B6-AE13-1EF0F8715B22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71189CBD-7AE2-49B6-AE13-1EF0F8715B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71189CBD-7AE2-49B6-AE13-1EF0F8715B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71189CBD-7AE2-49B6-AE13-1EF0F8715B22}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
