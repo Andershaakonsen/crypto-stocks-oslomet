@@ -10,8 +10,27 @@ import {
 import useSWRMutation from "swr/mutation";
 import { FetchError, ofetch } from "ofetch";
 import { mutate } from "swr";
+import { useDashboard } from "./dashboard.state";
+import { useMemo } from "react";
 
-export const useStocks = () => useSWRAuth<Stock[]>("/api/Stocks");
+export const useStocks = () => useSWRAuth<Stock[]>("/api/Stocks/currencies");
+
+export const useSelectedCurrency = () => {
+    const selected = useDashboard().selected;
+
+    const { data: stocks, isLoading, error } = useStocks();
+
+    const selectedCurrency = useMemo(
+        () => stocks?.find((s) => s.symbol === selected),
+        [selected, stocks]
+    );
+
+    return {
+        data: selectedCurrency,
+        isLoading,
+        error,
+    };
+};
 
 export const useWallets = () => {
     const user = useUser();
@@ -26,16 +45,18 @@ useWallets.key = (userId: number) => ({
     query: { userId },
 });
 
-/**
- * @example const { data: orders } = useTransactions();
- */
-export const useOrders = () => {
+export const useOrders = (limit: number = 3) => {
     const user = useUser();
     return useSWRAuth<Transaction[]>({
-        url: "/api/Orders",
-        query: { userId: user?.id, limit: 10 },
+        url: "/api/Stocks",
+        query: { userId: user?.id, limit },
     });
 };
+
+useOrders.key = (userId: number, limit: number = 3) => ({
+    url: "/api/Stocks",
+    query: { userId, limit },
+});
 
 export const useDeposit = () => {
     const user = useUser();

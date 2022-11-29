@@ -1,9 +1,12 @@
+import { Button } from "components";
 import Details from "components/Details";
+import OrderForm, { orderState, useOrderState } from "features/order/OrderForm";
 import React, { useEffect, useMemo, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
 import { dashboardState, useDashboard } from "../dashboard.state";
 import { useStocks, useWallets } from "../hooks";
 import WalletActions from "./WalletActions";
+import clsx from "clsx";
 
 const Loading = () => {
     return (
@@ -19,6 +22,7 @@ const Sidebar = () => {
     const { data: stocks, isLoading } = useStocks();
     const selected = useDashboard().selected;
     const { data: wallets, isLoading: walletLoading } = useWallets();
+    const orderMode = useOrderState().mode;
 
     const currency = useMemo(() => {
         return stocks?.find((s: any) => s.symbol === selected);
@@ -66,42 +70,10 @@ const Sidebar = () => {
             </section>
             <section className="py-6 panel grow">
                 <div className="grid grid-cols-1">
-                    <button className="py-1 green-solid-int">BUY</button>
+                    <ModeDisplay />
                 </div>
                 <div className="mt-4">
-                    <form>
-                        <label className="text-radix-slate11">Amount</label>
-                        <div className="h-14 pl-3 gap-2 bg-radix-slate5 w-full flex items-center mt-1 focus-within:ring-1 focus-within:ring-radix-blue9">
-                            <input
-                                className="block bg-transparent h-full w-full indent-12 text-right outline-none"
-                                type="number"
-                                placeholder="0.00"
-                                name="amount"
-                                required
-                            />
-                            <select
-                                className="bg-transparent border-l border-l-radix-slate1 h-full px-2 hover:bg-radix-slate6"
-                                value="USDT"
-                                onChange={() => {}}
-                            >
-                                <option value="USDT">USDT</option>
-                                <option disabled></option>
-                            </select>
-                        </div>
-                        <span className="mt-6 block w-full h-[2px] bg-radix-slate6"></span>
-                        <div className="flex items-center justify-between my-3 text-sm">
-                            Total = <span className="flex gap-2">USDT</span>
-                            <span className="max-w-[80px] truncate block">
-                                0.00
-                            </span>
-                        </div>
-                        <button
-                            type="submit"
-                            className="h-14 flex justify-center items-center green-solid-int w-full mt-6 "
-                        >
-                            PLACE ORDER
-                        </button>
-                    </form>
+                    <OrderForm />
                 </div>
             </section>
         </aside>
@@ -113,6 +85,11 @@ export default Sidebar;
 const MarketSelector = () => {
     const { data: stocks, isLoading } = useStocks();
     const selected = useDashboard().selected;
+
+    const stocksWithoutUSDT = useMemo(() => {
+        return stocks?.filter((s: any) => s.symbol !== "USDT");
+    }, [stocks]);
+
     return (
         <section className="h-14 shrink-0 border-b border-radix-slate6 sticky top-0 bg-radix-slate1 z-10">
             <div className="flex h-full items-center justify-between text-sm gap-4">
@@ -126,7 +103,7 @@ const MarketSelector = () => {
                     <option disabled value="">
                         Select Market
                     </option>
-                    {stocks?.map((stock: any) => (
+                    {stocksWithoutUSDT?.map((stock: any) => (
                         <option key={stock.id} value={stock.symbol}>
                             {stock.name} ({stock.symbol})
                         </option>
@@ -158,6 +135,22 @@ const Coin = ({ symbol = "X" }) => {
             });
     }, [actualSymbol]);
     return <>{Component && <Component className="h-8 w-8" />}</>;
+};
+
+const ModeDisplay = () => {
+    const mode = useOrderState().mode;
+
+    return (
+        <div className="w-full grid grid-cols-1">
+            <Button
+                color={"green"}
+                size="sm"
+                className={clsx("!rounded-none border-dotted !bg-transparent")}
+            >
+                BUY
+            </Button>
+        </div>
+    );
 };
 
 const NoSelectPlaceholder = () => (

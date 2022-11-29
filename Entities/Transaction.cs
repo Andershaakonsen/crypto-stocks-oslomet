@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace crypto_stocks.Entities;
 /**
 * Represents the transaction history of a user
@@ -15,9 +17,11 @@ public class Transaction
 
     public int UserId { get; set; }
 
+    [JsonIgnore]
     public User User { get; set; }
 
     public int WalletId { get; set; }
+    [JsonIgnore]
     public Wallet Wallet { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;

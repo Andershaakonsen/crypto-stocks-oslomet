@@ -21,9 +21,7 @@ public class StocksController : ControllerBase
         this.db = db;
     }
 
-    // Route for [controller]/transactions
     [HttpGet]
-    [Route("transactions")]
     public async Task<ActionResult> getTransactions([FromQuery] int limit = 10)
     {
         // Grab the newest transactions from the database
@@ -39,8 +37,8 @@ public class StocksController : ControllerBase
         });
     }
 
-    // Async task
     [HttpGet]
+    [Route("currencies")]
     [ResponseCache(VaryByHeader = "User-Agent", Duration = 3600)] // Cache the response for an hour to limit API calls being abused
     public async Task<ActionResult> FetchStocksList()
     {
@@ -49,8 +47,29 @@ public class StocksController : ControllerBase
         return Content(content, "application/json");
     }
 
-    [HttpPost]
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<ActionResult> GetTransaction(int id)
+    {
+        var transaction = await Task.Run(() => db.Transactions.Find(id));
 
+        if (transaction == null)
+        {
+            return NotFound(new ResponseData()
+            {
+                success = false,
+                message = "Transaction not found"
+            });
+        }
+
+        return Ok(new ResponseData()
+        {
+            success = true,
+            data = transaction
+        });
+    }
+
+    [HttpPost]
     public async Task<ActionResult> CreatePosition([FromBody] CreateOrderDTO orderDTO)
     {
         // Check if the user has enough money to buy the stock
@@ -149,8 +168,9 @@ public class StocksController : ControllerBase
     [Route("{id}")]
     public async Task<ActionResult> SellPosition([FromRoute] int id)
     {
+        var user = HttpContext.Features.Get<User>()!;
         // Make sure all required rows exists in the database
-        var transaction = await Task.Run(() => db.Transactions.Where(t => t.Id == id).FirstOrDefault<Transaction>());
+        var transaction = await Task.Run(() => db.Transactions.Where(t => t.Id == id && t.UserId == user.Id).FirstOrDefault<Transaction>());
 
         if (transaction == null) return NotFound(new ResponseData()
         {
@@ -198,7 +218,8 @@ public class StocksController : ControllerBase
 
     public async Task<ActionResult> UpdatePosition([FromRoute] int id, [FromBody] UpdateOrderDTO orderDTO)
     {
-        var transaction = await Task.Run(() => db.Transactions.Where(t => t.Id == id).FirstOrDefault<Transaction>());
+        var user = HttpContext.Features.Get<User>()!;
+        var transaction = await Task.Run(() => db.Transactions.Where(t => t.Id == id && t.UserId == user.Id).FirstOrDefault<Transaction>());
 
         if (transaction == null) return NotFound(new ResponseData()
         {

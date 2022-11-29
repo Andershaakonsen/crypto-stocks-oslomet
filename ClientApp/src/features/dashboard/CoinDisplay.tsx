@@ -10,8 +10,6 @@ const CoinDisplay = () => {
     const { selected } = useDashboard();
     const theme = useTheme();
 
-    //doge
-
     return (
         <main>
             <AdvancedChart
