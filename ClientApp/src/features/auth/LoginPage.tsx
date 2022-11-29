@@ -136,6 +136,11 @@ const LoginPage = () => {
                                     message:
                                         "Password must be at least 8 characters",
                                 },
+                                validate: (passwordValue) => {
+                                    if (!/\d/.test(passwordValue)) {
+                                        return "Password must contain at least 1 number";
+                                    }
+                                },
                             })}
                         />
                         <TextField
