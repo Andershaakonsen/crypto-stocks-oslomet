@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using crypto_stocks.Helpers;
 using crypto_stocks.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using crypto_stocks.Services;
+using crypto_stocks.DTO;
 
 namespace crypto_stocks.Controllers;
 

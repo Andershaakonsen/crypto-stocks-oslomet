@@ -1,15 +1,8 @@
 namespace crypto_stocks.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using crypto_stocks.Helpers;
 using crypto_stocks.DTO;
 using crypto_stocks.Entities;
-using System.Security.Claims;
-
-
-using BCrypt.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using crypto_stocks.Services;
@@ -43,6 +36,7 @@ public class AuthController : ControllerBase
     {
         try
         {
+
             var newUser = await authService.Register(user);
 
             var token = await authService.Authenticate(user.Email, user.Password);
