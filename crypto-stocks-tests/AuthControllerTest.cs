@@ -3,6 +3,7 @@ using System.Security.Claims;
 using crypto_stocks.Controllers;
 using crypto_stocks.DTO;
 using crypto_stocks.Entities;
+using crypto_stocks.Helpers;
 using crypto_stocks.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -100,7 +101,7 @@ public class AuthControllerTest
     {
         // Arrange
         var mockService = new Mock<IAuthService>();
-        mockService.Setup(repo => repo.Register(It.IsAny<RegisterDTO>())).Throws(new Exception("User already exists"));
+        mockService.Setup(repo => repo.Register(It.IsAny<RegisterDTO>())).Throws(new ServiceException("User already exists"));
 
         var controller = new AuthController(mockService.Object);
 

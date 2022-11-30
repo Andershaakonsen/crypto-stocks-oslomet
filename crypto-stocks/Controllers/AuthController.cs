@@ -6,6 +6,7 @@ using crypto_stocks.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using crypto_stocks.Services;
+using crypto_stocks.Helpers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -45,7 +46,7 @@ public class AuthController : ControllerBase
 
             return Ok(token);
         }
-        catch (Exception e)
+        catch (ServiceException e)
         {
             return BadRequest(e.Message);
         }
@@ -61,7 +62,7 @@ public class AuthController : ControllerBase
             var user = authService.GetUserFromRequest(HttpContext);
             return Ok(user);
         }
-        catch (Exception e)
+        catch (ServiceException e)
         {
             return NotFound(e.Message);
         }

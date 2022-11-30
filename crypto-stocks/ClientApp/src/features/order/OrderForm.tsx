@@ -1,17 +1,10 @@
 import clsx from "clsx";
 import { Button, TextField } from "components";
 import { useToast } from "context/ToastContext";
-import { useAccessToken, useUser } from "features/auth/AuthProvider";
-import { useDashboard } from "features/dashboard/dashboard.state";
-import {
-    useOrders,
-    useSelectedCurrency,
-    useWallets,
-} from "features/dashboard/hooks";
-import { FetchError, ofetch } from "ofetch";
+import { useSelectedCurrency } from "features/dashboard/hooks";
+import { FetchError } from "ofetch";
 import { useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { mutate } from "swr";
 import { proxy, useSnapshot } from "valtio";
 import { useCreateOrder } from "./hooks";
 
@@ -39,8 +32,6 @@ const OrderForm = () => {
         reset: resetFetcher,
     } = useCreateOrder();
     const [loading, setLoading] = useState(false);
-    const user = useUser();
-    const accessToken = useAccessToken();
     const toast = useToast();
     const { data: currency } = useSelectedCurrency();
     const { using } = useOrderState();

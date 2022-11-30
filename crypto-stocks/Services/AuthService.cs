@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using crypto_stocks.DTO;
+using System.Net;
 
 public interface IAuthService
 {
@@ -63,7 +64,7 @@ public class AuthService : IAuthService
     {
         // Check if the user exists
         var existing = Task.Run(() => db.Users.Where(u => u.Email == register.Email).FirstOrDefault()).Result;
-        if (existing != null) throw new ApplicationException("User already exists");
+        if (existing != null) throw new ServiceException("User already exists");
 
         var user = new User()
         {
@@ -82,7 +83,7 @@ public class AuthService : IAuthService
     {
         var user = context.Features.Get<User>()!;
 
-        if (user == null) throw new Exception("User not found");
+        if (user == null) throw new ServiceException("User not found", HttpStatusCode.Unauthorized);
 
         return user;
     }

@@ -1,4 +1,5 @@
 
+using System.Net;
 using crypto_stocks.Entities;
 using crypto_stocks.Helpers;
 
@@ -43,7 +44,7 @@ public class StockService : IStockService
 
         if (usdWallet == null)
         {
-            throw new Exception("User does not have a USD wallet");
+            throw new ServiceException("User does not have a USD wallet");
         }
 
         // Get the current usd exchange rate from CMC service
@@ -52,7 +53,7 @@ public class StockService : IStockService
         // Check if the user has enough money to buy the stock
         if (usdWallet.Balance < ((float)usdRate))
         {
-            throw new Exception("Insufficient funds");
+            throw new ServiceException("Insufficient funds");
         }
 
         // Create or update wallet for the stock
@@ -85,21 +86,21 @@ public class StockService : IStockService
         var transaction = await GetTransactionByUser(userId, transactionId);
         if (transaction == null)
         {
-            throw new Exception("Transaction not found");
+            throw new ServiceException("Transaction not found", HttpStatusCode.NotFound);
         }
 
         var stockWallet = await walletService.GetWalletById(transaction.WalletId);
 
         if (stockWallet == null)
         {
-            throw new Exception("Wallet not found");
+            throw new ServiceException("Wallet not found", HttpStatusCode.NotFound);
         }
 
         var usdWallet = await walletService.GetUSDWallet(userId);
 
         if (usdWallet == null)
         {
-            throw new Exception("User does not have a USD wallet");
+            throw new ServiceException("User does not have a USD wallet", HttpStatusCode.NotFound);
         }
 
         // Call to API to get the current USD exchange rate
@@ -117,15 +118,15 @@ public class StockService : IStockService
     public async Task<Transaction> UpdateTransactionUnits(int userId, int transactionId, decimal units)
     {
         var transaction = await GetTransactionByUser(userId, transactionId);
-        if (transaction == null) throw new Exception("Transaction not found");
+        if (transaction == null) throw new ServiceException("Transaction not found", HttpStatusCode.NotFound);
 
 
         var stockWallet = await walletService.GetWalletById(transaction.WalletId);
-        if (stockWallet == null) throw new Exception("Wallet not found");
+        if (stockWallet == null) throw new ServiceException("Wallet not found", HttpStatusCode.NotFound);
 
 
         var usdWallet = await walletService.GetUSDWallet(userId);
-        if (usdWallet == null) throw new Exception("User does not have a USD wallet");
+        if (usdWallet == null) throw new ServiceException("User does not have a USD wallet", HttpStatusCode.NotFound);
 
         // Units are the same, no need to update
         if (units == transaction.Units) return transaction;
@@ -145,7 +146,7 @@ public class StockService : IStockService
             // Buy the difference
             var difference = units - transaction.Units;
             var usdRate = await cmcService.GetUSDExchangeRate(difference, transaction.Symbol);
-            if (usdWallet.Balance < (float)usdRate) throw new Exception("Insufficient funds");
+            if (usdWallet.Balance < (float)usdRate) throw new ServiceException("Insufficient funds");
             usdWallet.Balance -= (float)usdRate;
             stockWallet.Balance += (float)difference;
             transaction.Amount += (float)usdRate;

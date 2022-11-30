@@ -4,6 +4,7 @@ using crypto_stocks.Entities;
 using crypto_stocks.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using crypto_stocks.Helpers;
 
 namespace crypto_stocks.Controllers;
 
@@ -64,7 +65,7 @@ public class StocksController : ControllerBase
 
             return Ok(transaction);
         }
-        catch (Exception e)
+        catch (ServiceException e)
         {
             return BadRequest(e.Message);
         }
@@ -83,7 +84,7 @@ public class StocksController : ControllerBase
 
             return Ok("Position sold");
         }
-        catch (Exception e)
+        catch (ServiceException e)
         {
             return BadRequest(e.Message);
         }
@@ -101,7 +102,7 @@ public class StocksController : ControllerBase
 
             return Ok(transaction);
         }
-        catch (Exception e)
+        catch (ServiceException e)
         {
             return BadRequest(e.Message);
         }

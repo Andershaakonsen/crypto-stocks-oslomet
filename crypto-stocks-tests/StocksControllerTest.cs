@@ -3,6 +3,7 @@ namespace crypto_stocks_tests;
 using crypto_stocks.Controllers;
 using crypto_stocks.DTO;
 using crypto_stocks.Entities;
+using crypto_stocks.Helpers;
 using crypto_stocks.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -126,7 +127,7 @@ public class StocksControllerTest
     {
         // Arrange
         var mockService = new Mock<IStockService>();
-        mockService.Setup(repo => repo.CreateTransaction(1, 1, "BTC")).Throws(new Exception("Insufficient funds"));
+        mockService.Setup(repo => repo.CreateTransaction(1, 1, "BTC")).Throws(new ServiceException("Insufficient funds"));
 
         var controller = new StocksController(mockService.Object, null!);
 
@@ -173,7 +174,7 @@ public class StocksControllerTest
     {
         // Arrange
         var mockService = new Mock<IStockService>();
-        mockService.Setup(repo => repo.DeleteTransaction(1, 1)).Throws(new Exception("Could not sell position"));
+        mockService.Setup(repo => repo.DeleteTransaction(1, 1)).Throws(new ServiceException("Could not sell position"));
 
         var controller = new StocksController(mockService.Object, null!);
         // Populate feature data to simulate JWT request succeeded
@@ -248,7 +249,7 @@ public class StocksControllerTest
     {
         // Arrange
         var mockService = new Mock<IStockService>();
-        mockService.Setup(repo => repo.UpdateTransactionUnits(1, 1, 1)).Throws(new Exception("Could not update position"));
+        mockService.Setup(repo => repo.UpdateTransactionUnits(1, 1, 1)).Throws(new ServiceException("Could not update position"));
 
         var controller = new StocksController(mockService.Object, null!);
         // Populate feature data to simulate JWT request succeeded
