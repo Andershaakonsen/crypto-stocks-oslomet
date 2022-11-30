@@ -1,9 +1,9 @@
 using crypto_stocks.Controllers;
+using crypto_stocks.DTO;
 using crypto_stocks.Entities;
 using crypto_stocks.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Xunit.Abstractions;
 
 namespace crypto_stocks_tests;
 
