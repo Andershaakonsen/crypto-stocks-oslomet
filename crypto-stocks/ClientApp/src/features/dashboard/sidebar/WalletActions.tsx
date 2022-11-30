@@ -29,7 +29,11 @@ const DepositModal = ({}) => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<FormData>();
+    } = useForm<FormData>({
+        defaultValues: {
+            amount: 0,
+        },
+    });
 
     const onSubmit: SubmitHandler<FormData> = async (data) => {
         try {
@@ -92,7 +96,11 @@ const WithdrawModal = () => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<FormData>();
+    } = useForm<FormData>({
+        defaultValues: {
+            amount: 0,
+        },
+    });
 
     const onSubmit: SubmitHandler<FormData> = async (data) => {
         try {

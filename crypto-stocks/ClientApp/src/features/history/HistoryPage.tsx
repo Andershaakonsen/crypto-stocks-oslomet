@@ -1,5 +1,6 @@
 import Header from "components/Header";
 import { useOrders } from "features/dashboard/hooks";
+import OrderActions from "features/order/OrderActions";
 import { OrderItem } from "features/order/OrderItem";
 
 const HistoryPage = () => {
@@ -30,7 +31,9 @@ const HistoryPage = () => {
                 </div>
                 <ul className="slate-border border" data-js="order-list">
                     {orders?.map((order) => (
-                        <OrderItem key={order.id} order={order} />
+                        <OrderItem key={order.id} order={order}>
+                            <OrderActions orderId={order.id} />
+                        </OrderItem>
                     ))}
                 </ul>
             </main>

@@ -35,6 +35,7 @@ const OrderActions = ({ orderId }: Props) => {
             await Promise.all([
                 mutate(useWallets.key(user.id)),
                 mutate(useOrders.key(user.id)),
+                mutate(useOrders.key(user.id, 100)),
             ]);
 
             toast.success("Order sold successfully");
