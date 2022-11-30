@@ -17,11 +17,13 @@ const OrderHistory = ({}: Props) => {
                     <i className="gg-external mr-2"></i>View All
                 </Button>
             </div>
-            <div className="grid grid-cols-5 text-radix-slate11 px-4 py-1 text-sm bg-radix-slate3 sticky top-0 z-10">
+            <div className="grid grid-cols-3 lg:grid-cols-5 text-radix-slate11 px-4 py-1 text-sm bg-radix-slate3 sticky top-0 z-10">
                 <span className="border-r px-3 slate-border">Type</span>
                 <span className="border-r px-3 slate-border">Amount</span>
-                <span className="border-r px-3 slate-border">Price</span>
-                <span className="border-r px-3 slate-border">Created at</span>
+                <span className="lg:border-r px-3 slate-border">Price</span>
+                <span className="border-r px-3 slate-border hidden lg:block">
+                    Created at
+                </span>
                 <span className="px-3 slate-border"></span>
             </div>
             <ul>
@@ -30,9 +32,11 @@ const OrderHistory = ({}: Props) => {
                         <OrderActions orderId={order.id} />
                     </OrderItem>
                 ))}
-                <li className="text-center text-radix-slate11">
-                    No orders made yet.
-                </li>
+                {!orders?.length && (
+                    <li className="text-center text-radix-slate11">
+                        No orders made yet.
+                    </li>
+                )}
             </ul>
         </footer>
     );

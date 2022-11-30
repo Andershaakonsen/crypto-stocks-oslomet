@@ -5,7 +5,6 @@ import { Text } from "components";
 import { useForm } from "react-hook-form";
 import { useToast } from "context/ToastContext";
 import { FetchError, ofetch } from "ofetch";
-import useSWRMutation from "swr/mutation";
 import { useAuth } from "./AuthProvider";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +22,7 @@ interface AuthResponse {
 const LoginPage = () => {
     const navigate = useNavigate();
     const Toast = useToast();
-    const { login, user } = useAuth();
+    const { login, user, loginWithToken } = useAuth();
     const [displayLogin, setDisplayLogin] = useState(true);
     const {
         register,
@@ -41,7 +40,7 @@ const LoginPage = () => {
             }
 
             //Register
-            await ofetch("/api/Auth/register", {
+            const accessToken = await ofetch<string>("/api/Auth/register", {
                 method: "POST",
                 body: {
                     email: data.email,
@@ -50,11 +49,12 @@ const LoginPage = () => {
                 },
             });
 
-            setDisplayLogin(true);
-            Toast.success("User created, you can now login :)");
+            loginWithToken(accessToken);
+
+            Toast.success("Welcome to MetFinance!");
         } catch (error) {
             if (error instanceof FetchError) {
-                Toast.error(error.data?.message);
+                Toast.error(error.data);
                 console.log(error.data);
             }
         }
@@ -77,7 +77,7 @@ const LoginPage = () => {
                     <>
                         <TextField
                             label="Email"
-                            type="email"
+                            type="email" // No need for custom validation, HTML5 does it for us
                             placeholder="Enter email..."
                             error={errors.email?.message}
                             {...register("email", {
@@ -107,9 +107,9 @@ const LoginPage = () => {
                             {...register("username", {
                                 required: "You must ender a username",
                                 minLength: {
-                                    value: 4,
+                                    value: 3,
                                     message:
-                                        "Username must be at least 4 characters",
+                                        "Username must be at least 3 characters",
                                 },
                             })}
                         />

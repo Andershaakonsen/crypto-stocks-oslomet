@@ -60,7 +60,7 @@ export interface Transaction {
 
 export interface User {
     id: number;
-    username: string;
+    userName: string;
     email: string;
     wallets?: Wallet[];
     transactions?: Transaction[];

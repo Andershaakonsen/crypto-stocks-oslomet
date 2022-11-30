@@ -29,16 +29,25 @@ body {
     display: grid;
 
     grid-template-areas:
-        "left-sidebar main right-sidebar"
-        "left-sidebar footer right-sidebar";
+        "main"
+        "footer";
 
-    --sidebar-width: 300px;
-    --footer-height: 300px;
+    grid-template-columns: 1fr;
+    grid-template-rows: 400px auto;
 
-    grid-template-columns: var(--sidebar-width) 1fr 0px;
-    grid-template-rows: calc(100vh - 57px - var(--footer-height)) var(
-            --footer-height
-        );
+    @media screen and (min-width: 768px) {
+        grid-template-areas:
+            "left-sidebar main right-sidebar"
+            "left-sidebar footer right-sidebar";
+
+        --sidebar-width: 300px;
+        --footer-height: 300px;
+
+        grid-template-columns: var(--sidebar-width) 1fr 0px;
+        grid-template-rows: calc(100vh - 57px - var(--footer-height)) var(
+                --footer-height
+            );
+    }
 
     main {
         grid-area: main;
@@ -46,11 +55,48 @@ body {
     }
 
     .left-sidebar {
-        grid-area: left-sidebar;
+        @apply fixed;
+        top: calc(56px + 40px);
+        height: calc(100vh - 56px - 40px);
+        z-index: 40;
+        transform: translate(-100%);
+        transition: transform 0.3s ease-in-out;
+        will-change: transform;
+        width: 80%;
+
+        &.open {
+            transform: translate(0%);
+        }
+
+        @media screen and (min-width: 768px) {
+            grid-area: left-sidebar;
+            top: 0;
+            @apply relative;
+            height: auto;
+            width: auto;
+            transform: translate(0%);
+        }
+
         @apply border-r border-radix-slate6 flex flex-col overflow-y-auto;
 
         section {
             @apply px-6 border-b border-radix-slate6;
+        }
+    }
+
+    .sidebar-backdrop {
+        @apply absolute top-0 left-0 w-full h-full bg-black bg-opacity-50;
+        z-index: 20;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        will-change: opacity;
+
+        @media screen and (min-width: 768px) {
+            display: none;
+        }
+
+        &.open {
+            opacity: 1;
         }
     }
 

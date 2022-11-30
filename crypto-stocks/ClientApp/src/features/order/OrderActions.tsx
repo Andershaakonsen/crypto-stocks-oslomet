@@ -39,7 +39,7 @@ const OrderActions = ({ orderId }: Props) => {
 
             toast.success("Order sold successfully");
         } catch (error) {
-            toast.error(error?.data?.message || error.message);
+            toast.error(error?.data || error.message);
         } finally {
             setLoading(false);
         }
@@ -112,7 +112,7 @@ const UpdateOrderModal = ({
             setLoading(false);
             setOpen(false);
         } catch (error) {
-            toast.error(error?.data?.message || error.message);
+            toast.error(error?.data || error.message);
             setLoading(false);
         }
     };

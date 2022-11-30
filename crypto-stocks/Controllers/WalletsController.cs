@@ -3,6 +3,7 @@ using crypto_stocks.Helpers;
 using crypto_stocks.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using crypto_stocks.Services;
 
 namespace crypto_stocks.Controllers;
 
@@ -12,103 +13,46 @@ namespace crypto_stocks.Controllers;
 
 public class WalletsController : ControllerBase
 {
-    private readonly DataContext db;
+    private readonly IWalletService walletService;
 
-    public WalletsController(DataContext db)
+    public WalletsController(IWalletService walletService)
     {
-        this.db = db;
+        this.walletService = walletService;
     }
 
     [HttpGet]
-    public IActionResult Get([FromQuery] int userId)
+    public async Task<ActionResult<List<Wallet>>> Get([FromQuery] int userId)
     {
-        var wallets = db.Wallets
-            .Where(w => w.UserId == userId).ToList();
+        var wallets = await walletService.GetWalletsByUserId(userId);
 
-        var response = new ResponseData();
-        if (wallets == null) response.data = new List<Wallet>();
-        else response.data = wallets;
-
-        return Ok(response);
+        return Ok(wallets == null ? new List<Wallet>() : wallets);
     }
 
-
-    /**
-    * Update the balance of the USD WALLET. Deposits are NOT possible for crypto wallets.
-    **/
     [HttpPost]
     public async Task<ActionResult<Wallet>> DepositToUserWallet([FromBody] DepositDTO deposit)
     {
-
-        // Query for wallet 
-        var query = from w in db.Wallets
-                    where w.UserId == deposit.userId && w.Symbol == "USD"
-                    select w;
-
-        var wallet = query.FirstOrDefault<Wallet>();
-
-        // If wallet does not exist, just create it
-        if (wallet == null)
+        var wallet = await walletService.DepositToUserWallet(deposit.userId, deposit.amount);
+        if (wallet != null)
         {
-            wallet = new Wallet();
-            wallet.UserId = deposit.userId;
-            wallet.Balance = deposit.amount;
-            db.Wallets.Add(wallet);
+            return Ok(wallet);
         }
         else
         {
-            wallet.Balance += deposit.amount;
-        }
-
-        var result = await db.SaveChangesAsync();
-        if (result > 0)
-        {
-            return Ok(new ResponseData { data = wallet, success = true, message = "Deposit successful" });
-        }
-        else
-        {
-            return BadRequest(new ResponseData { success = false, message = "Deposit failed", code = Codes.DATABASE_ERROR });
+            return BadRequest("Deposit failed");
         }
     }
 
-    /**
-    * Update the balance of the USD WALLET. Withdrawals are NOT possible for crypto wallets.
-    **/
     [HttpPatch]
-    public async Task<ActionResult> WithdrawFromUserWallet([FromBody] DepositDTO withdrawal)
+    public async Task<ActionResult<Wallet>> WithdrawFromUserWallet([FromBody] DepositDTO withdrawal)
     {
-
-        // Query for wallet 
-        var query = from w in db.Wallets
-                    where w.UserId == withdrawal.userId && w.Symbol == "USD"
-                    select w;
-
-        var wallet = query.FirstOrDefault<Wallet>();
-        // If wallet does not exist, respond with not found
-        if (wallet == null)
+        var wallet = await walletService.WithdrawFromUserWallet(withdrawal.userId, withdrawal.amount);
+        if (wallet != null)
         {
-            return NotFound(new { message = "Wallet does not exist", code = Codes.NOT_FOUND });
-        }
-
-        // If wallet balance is less than withdrawal amount, respond with insufficient funds
-        if (wallet.Balance < withdrawal.amount)
-        {
-            return BadRequest(new { message = "Insufficient funds to withdraw", code = Codes.INSUFFICIENT_FUNDS });
-        }
-
-        System.Console.WriteLine(wallet.Balance);
-        wallet.Balance -= withdrawal.amount;
-        System.Console.WriteLine(wallet.Balance);
-
-
-        var result = await db.SaveChangesAsync();
-        if (result > 0)
-        {
-            return Ok(new { data = wallet, message = "success" });
+            return Ok(wallet);
         }
         else
         {
-            return BadRequest(new { message = "Could not withdraw funds", code = Codes.DATABASE_ERROR });
+            return BadRequest("Withdraw failed");
         }
     }
 }

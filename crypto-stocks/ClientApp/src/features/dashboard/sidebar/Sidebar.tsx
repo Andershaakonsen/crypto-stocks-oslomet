@@ -1,12 +1,89 @@
+import clsx from "clsx";
 import { Button } from "components";
 import Details from "components/Details";
-import OrderForm, { orderState, useOrderState } from "features/order/OrderForm";
+import OrderForm from "features/order/OrderForm";
 import React, { useEffect, useMemo, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
+import { proxy, useSnapshot } from "valtio";
 import { dashboardState, useDashboard } from "../dashboard.state";
 import { useStocks, useWallets } from "../hooks";
 import WalletActions from "./WalletActions";
-import clsx from "clsx";
+
+export const sidebarState = proxy({
+    open: false,
+});
+
+export const useSidebar = () => useSnapshot(sidebarState);
+
+const Sidebar = () => {
+    const { data: stocks, isLoading } = useStocks();
+    const selected = useDashboard().selected;
+    const { data: wallets, isLoading: walletLoading } = useWallets();
+    const open = useSidebar().open;
+
+    const currency = useMemo(() => {
+        return stocks?.find((s: any) => s.symbol === selected);
+    }, [selected, stocks]);
+
+    if (isLoading || walletLoading) return <Loading />;
+
+    return (
+        <>
+            <aside className={clsx("left-sidebar", open && "open")}>
+                {!currency && <NoSelectPlaceholder />}
+                <MarketSelector />
+                <Details defaultOpen title="Wallet Balance">
+                    <section className="panel py-1">
+                        <div className="flex items-center justify-between">
+                            <span className="text-radix-slate11">Asset</span>
+                            <span className="text-radix-slate11">Amount</span>
+                        </div>
+                    </section>
+                    <section className="panel py-6">
+                        <ul className="space-y-4 max-h-[200px] overflow-y-auto">
+                            {!wallets?.length && (
+                                <li className="text-center text-radix-slate11">
+                                    No wallets found. Please deposit funds.
+                                </li>
+                            )}
+                            {wallets?.map((wallet) => (
+                                <li
+                                    key={wallet.id}
+                                    className="flex items-center justify-between"
+                                >
+                                    <span className="">{wallet.symbol}</span>
+                                    <span className="font-medium">
+                                        {wallet.balance}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                        <WalletActions />
+                    </section>
+                </Details>
+
+                {/* ORDER FROM START */}
+                <section className="py-3 panel sticky top-14">
+                    <h1 className="title">Order Form</h1>
+                </section>
+                <section className="py-6 panel grow">
+                    <div className="grid grid-cols-1">
+                        <ModeDisplay />
+                    </div>
+                    <div className="mt-4">
+                        <OrderForm />
+                    </div>
+                </section>
+            </aside>
+            <span
+                onClick={() => (sidebarState.open = false)}
+                className={clsx("sidebar-backdrop", open && "open")}
+            ></span>
+        </>
+    );
+};
+
+export default Sidebar;
 
 const Loading = () => {
     return (
@@ -18,72 +95,8 @@ const Loading = () => {
     );
 };
 
-const Sidebar = () => {
-    const { data: stocks, isLoading } = useStocks();
-    const selected = useDashboard().selected;
-    const { data: wallets, isLoading: walletLoading } = useWallets();
-    const orderMode = useOrderState().mode;
-
-    const currency = useMemo(() => {
-        return stocks?.find((s: any) => s.symbol === selected);
-    }, [selected, stocks]);
-
-    if (isLoading || walletLoading) return <Loading />;
-
-    return (
-        <aside className="left-sidebar relative">
-            {!currency && <NoSelectPlaceholder />}
-            <MarketSelector />
-            <Details defaultOpen title="Wallet Balance">
-                <section className="panel py-1">
-                    <div className="flex items-center justify-between">
-                        <span className="text-radix-slate11">Asset</span>
-                        <span className="text-radix-slate11">Amount</span>
-                    </div>
-                </section>
-                <section className="panel py-6">
-                    <ul className="space-y-4 max-h-[200px] overflow-y-auto">
-                        {!wallets?.length && (
-                            <li className="text-center text-radix-slate11">
-                                No wallets found. Please deposit funds.
-                            </li>
-                        )}
-                        {wallets?.map((wallet) => (
-                            <li
-                                key={wallet.id}
-                                className="flex items-center justify-between"
-                            >
-                                <span className="">{wallet.symbol}</span>
-                                <span className="font-medium">
-                                    {wallet.balance}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                    <WalletActions />
-                </section>
-            </Details>
-
-            {/* ORDER FROM START */}
-            <section className="py-3 panel sticky top-14">
-                <h1 className="title">Order Form</h1>
-            </section>
-            <section className="py-6 panel grow">
-                <div className="grid grid-cols-1">
-                    <ModeDisplay />
-                </div>
-                <div className="mt-4">
-                    <OrderForm />
-                </div>
-            </section>
-        </aside>
-    );
-};
-
-export default Sidebar;
-
 const MarketSelector = () => {
-    const { data: stocks, isLoading } = useStocks();
+    const { data: stocks } = useStocks();
     const selected = useDashboard().selected;
 
     const stocksWithoutUSDT = useMemo(() => {
@@ -138,8 +151,6 @@ const Coin = ({ symbol = "X" }) => {
 };
 
 const ModeDisplay = () => {
-    const mode = useOrderState().mode;
-
     return (
         <div className="w-full grid grid-cols-1">
             <Button

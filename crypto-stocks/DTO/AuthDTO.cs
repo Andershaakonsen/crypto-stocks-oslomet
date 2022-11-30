@@ -9,6 +9,8 @@ public class RegisterDTO
     [EmailAddress]
     public string Email { get; init; } = null!;
     [Required]
+    [MinLength(8)]
+    [RegularExpression(@"^(?=.*\d).+$", ErrorMessage = "Password must contain a number")]
     public string Password { get; init; } = null!;
     [Required]
     [MinLength(3)]
@@ -21,5 +23,6 @@ public class LoginDTO
     [EmailAddress]
     public string Email { get; init; } = null!;
     [Required]
+    [MinLength(8)]
     public string Password { get; init; } = null!;
 }

@@ -1,4 +1,4 @@
-import { useAccessToken, useUser } from "features/auth/AuthProvider";
+import { useUser } from "features/auth/AuthProvider";
 import { useSWRAuth } from "features/auth/hooks";
 import {
     DepositDTO,
@@ -8,12 +8,17 @@ import {
     Wallet,
 } from "types/api";
 import useSWRMutation from "swr/mutation";
-import { FetchError, ofetch } from "ofetch";
+import { FetchError } from "ofetch";
 import { mutate } from "swr";
 import { useDashboard } from "./dashboard.state";
 import { useMemo } from "react";
+import { authFetch } from "utils/fetch";
 
-export const useStocks = () => useSWRAuth<Stock[]>("/api/Stocks/currencies");
+export const useStocks = () => {
+    return useSWRAuth<Stock[]>("/api/Stocks/currencies", (url) =>
+        authFetch(url).then((d) => d.data)
+    );
+};
 
 export const useSelectedCurrency = () => {
     const selected = useDashboard().selected;
@@ -60,7 +65,6 @@ useOrders.key = (userId: number, limit: number = 3) => ({
 
 export const useDeposit = () => {
     const user = useUser();
-    const accessToken = useAccessToken();
 
     return useSWRMutation<
         ResponseData<Wallet>,
@@ -70,16 +74,13 @@ export const useDeposit = () => {
     >(
         "/api/Wallets",
         (url, { arg }) =>
-            ofetch(url, {
+            authFetch(url, {
                 method: "POST",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
                 body: {
                     ...arg,
                     userId: user?.id,
                 },
-            }).then((d) => d.data),
+            }),
         {
             throwOnError: true,
             onSuccess: () => {
@@ -91,7 +92,6 @@ export const useDeposit = () => {
 
 export const useWithdraw = () => {
     const user = useUser();
-    const accessToken = useAccessToken();
 
     return useSWRMutation<
         ResponseData<Wallet>,
@@ -101,16 +101,13 @@ export const useWithdraw = () => {
     >(
         "/api/Wallets",
         (url, { arg }) =>
-            ofetch(url, {
+            authFetch(url, {
                 method: "PATCH",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
                 body: {
                     ...arg,
                     userId: user?.id,
                 },
-            }).then((d) => d.data),
+            }),
         {
             throwOnError: true,
             onSuccess: () => {
@@ -118,4 +115,10 @@ export const useWithdraw = () => {
             },
         }
     );
+};
+
+export const useUSDWallet = () => {
+    const { data: wallets } = useWallets();
+
+    return useMemo(() => wallets?.find((w) => w.symbol === "USD"), [wallets]);
 };

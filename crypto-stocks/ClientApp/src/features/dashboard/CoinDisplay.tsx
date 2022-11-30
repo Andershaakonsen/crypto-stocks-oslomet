@@ -1,11 +1,13 @@
 import { useDashboard } from "./dashboard.state";
 import { AdvancedChart } from "react-tradingview-embed";
 import { useTheme } from "features/auth/ThemeProvider";
+import { memo } from "react";
 
-interface Props {}
-
-// When done with getting selected currenc. CReate reusable hook for selected currency
-
+/**
+ * Custom coin chart component
+ * Uses TradingView charting library `react-tradingview-embed`
+ * @see https://www.npmjs.com/package/react-tradingview-embed
+ */
 const CoinDisplay = () => {
     const { selected } = useDashboard();
     const theme = useTheme();
@@ -31,4 +33,4 @@ const CoinDisplay = () => {
     );
 };
 
-export default CoinDisplay;
+export default memo(CoinDisplay);

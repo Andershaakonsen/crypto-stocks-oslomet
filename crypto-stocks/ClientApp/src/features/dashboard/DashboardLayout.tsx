@@ -1,7 +1,8 @@
 import Header from "components/Header";
 import { useAuth } from "features/auth/AuthProvider";
 import { Outlet, Navigate } from "react-router-dom";
-import { CgSpinner } from "react-icons/cg";
+import { CgMenu, CgSpinner } from "react-icons/cg";
+import { Button } from "components";
 
 const DashboardLayout = () => {
     const { user, loading } = useAuth();

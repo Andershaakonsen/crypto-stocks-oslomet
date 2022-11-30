@@ -4,7 +4,7 @@ import { Dialog, DialogDescription, DialogTitle } from "components/dialog";
 import { useToast } from "context/ToastContext";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useDeposit, useWithdraw } from "../hooks";
+import { useDeposit, useUSDWallet, useWithdraw } from "../hooks";
 
 const WalletActions = () => {
     return (
@@ -36,7 +36,10 @@ const DepositModal = ({}) => {
             await trigger(data);
             setOpen(false);
             toast.success("Deposit successful");
-        } catch (error) {}
+        } catch (error) {
+            console.log(error);
+            toast.error(error?.data);
+        }
     };
 
     return (
@@ -65,9 +68,12 @@ const DepositModal = ({}) => {
                             value: 1,
                             message: "Amount must be greater than 0",
                         },
+                        validate(value) {
+                            return isNaN(value) ? "Invalid number" : true;
+                        },
                     })}
                     label="Amount"
-                    type="number"
+                    type="text"
                 />
                 <Button loading={isMutating} size="sm" className="mt-2">
                     <span>Deposit</span>
@@ -79,6 +85,7 @@ const DepositModal = ({}) => {
 
 const WithdrawModal = () => {
     const { trigger, error, isMutating, reset } = useWithdraw();
+    const usdWallet = useUSDWallet();
     const toast = useToast();
     const [open, setOpen] = useState(false);
     const {
@@ -92,7 +99,9 @@ const WithdrawModal = () => {
             await trigger(data);
             setOpen(false);
             toast.success("Withdrawal successful");
-        } catch (error) {}
+        } catch (error) {
+            toast.error(error?.data);
+        }
     };
     return (
         <Dialog
@@ -112,7 +121,7 @@ const WithdrawModal = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
                     onInput={reset}
-                    error={errors.amount?.message || error?.data?.message}
+                    error={errors.amount?.message || error?.data}
                     {...register("amount", {
                         required: "Please enter an amount",
                         valueAsNumber: true,
@@ -120,9 +129,16 @@ const WithdrawModal = () => {
                             value: 1,
                             message: "Amount must be greater than 0",
                         },
+                        validate(value) {
+                            if (isNaN(value)) return "Invalid number";
+                            if (usdWallet) {
+                                if (value > usdWallet.balance) {
+                                    return "Insufficient funds";
+                                }
+                            }
+                        },
                     })}
                     label="Amount"
-                    type="number"
                 />
                 <Button
                     color="red"

@@ -1,10 +1,10 @@
 using System.Security.Claims;
 using crypto_stocks.Entities;
 using crypto_stocks.Helpers;
+using crypto_stocks.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-// using identity
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +15,18 @@ var builder = WebApplication.CreateBuilder(args);
 
     // add db context
     services.AddDbContext<DataContext>();
+
+    services.AddScoped<IWalletService, WalletService>();
+    services.AddScoped<IStockService, StockService>();
+    services.AddScoped<IAuthService, AuthService>();
+    services.AddScoped<ICMCService, CMCService>();
     // Initialize auth
     services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     }).AddJwtBearer(options =>
-    {
+    { // Setup JWT token validation
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -39,7 +44,6 @@ var builder = WebApplication.CreateBuilder(args);
             OnTokenValidated = context =>
             {
                 var userId = int.Parse(context.Principal.FindFirstValue(ClaimTypes.NameIdentifier));
-
                 var user = context.HttpContext.RequestServices.GetRequiredService<DataContext>().Users.Find(userId);
                 if (user == null)
                 {
@@ -61,6 +65,7 @@ builder.Services.AddResponseCaching(); // Add response caching to not drain coin
 
 
 var app = builder.Build();
+// Load .env file
 DotNetEnv.Env.Load();
 
 // migrate any database changes on startup (includes initial db creation)
@@ -85,6 +90,7 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
+app.UseMiddleware<ExceptionFilter>(); // Add custom exception filter middleware to handle uncaught exceptions
 
 // All API endpoints here
 app.UseEndpoints(endpoints =>

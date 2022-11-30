@@ -5,6 +5,7 @@ import { createContext, useContext } from "react";
 const ToastContext = createContext(
     new Notyf({
         position: { x: "center", y: "bottom" },
+        duration: 2000,
     })
 );
 

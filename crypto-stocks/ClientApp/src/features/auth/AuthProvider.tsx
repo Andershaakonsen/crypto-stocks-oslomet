@@ -11,12 +11,9 @@ export interface AuthContext {
     accessToken: string | null;
     user: User | null;
     login: (email: string, password: string) => Promise<void>;
+    loginWithToken: (token: string) => void;
     logout: () => void;
     loading: boolean;
-}
-
-interface AuthResponse {
-    data: string;
 }
 
 const AuthContext = createContext<AuthContext>(null!);
@@ -37,22 +34,23 @@ const AuthProvider = ({ children }: Props) => {
 
     const login = async (email: string, password: string) => {
         try {
-            const { data: accessToken } = await ofetch<AuthResponse>(
-                "/api/Auth/login",
-                {
-                    method: "POST",
-                    body: {
-                        email,
-                        password,
-                    },
-                }
-            );
+            const accessToken = await ofetch<string>("/api/Auth/login", {
+                method: "POST",
+                body: {
+                    email,
+                    password,
+                },
+            });
 
             setAccessToken(accessToken);
         } catch (error) {
             console.log(error?.data);
             throw error;
         }
+    };
+
+    const loginWithToken = (token: string) => {
+        setAccessToken(token);
     };
 
     const logout = () => {
@@ -66,7 +64,7 @@ const AuthProvider = ({ children }: Props) => {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
-            }).then((res) => res.data),
+            }).then((res) => res),
         {
             onError(err) {
                 if (err instanceof FetchError) {
@@ -87,6 +85,7 @@ const AuthProvider = ({ children }: Props) => {
                 accessToken,
                 login,
                 logout,
+                loginWithToken,
                 loading: !accessToken ? false : loading,
             }}
         >

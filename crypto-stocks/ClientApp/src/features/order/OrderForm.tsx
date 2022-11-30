@@ -13,6 +13,7 @@ import { useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { mutate } from "swr";
 import { proxy, useSnapshot } from "valtio";
+import { useCreateOrder } from "./hooks";
 
 interface OrderState {
     mode: "buy" | "sell";
@@ -31,6 +32,12 @@ interface FormData {
 }
 
 const OrderForm = () => {
+    const {
+        trigger,
+        error,
+        isMutating,
+        reset: resetFetcher,
+    } = useCreateOrder();
     const [loading, setLoading] = useState(false);
     const user = useUser();
     const accessToken = useAccessToken();
@@ -51,7 +58,7 @@ const OrderForm = () => {
         },
     });
 
-    const amount = watch("amount");
+    const amount = watch("amount") || 0;
 
     /**
      * Computed values based on what the user has selected as the currency to convert from
@@ -86,42 +93,27 @@ const OrderForm = () => {
                 : amount / currency.quote.USD.price;
 
         try {
-            await ofetch("/api/Stocks", {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: {
-                    units,
-                    symbol: currency.symbol,
-                    userId: user!.id,
-                },
-            });
+            await trigger({ symbol: currency.symbol, units });
 
-            // Buy completed. Reset and mutate all dependent queries
+            // Buy completed. Reset form
             reset();
-
-            await Promise.all([
-                mutate(useWallets.key(user!.id)),
-                mutate(useOrders.key(user!.id)),
-            ]);
 
             toast.success("Order completed successfully");
             setLoading(false);
         } catch (error) {
             if (error instanceof FetchError) {
-                toast.error(error.data?.message || error.message);
+                toast.error(error.data || error.message);
             }
         }
     };
 
+    const errorMsg = errors.amount?.message || error?.data || error?.message;
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <label className="text-radix-slate11" htmlFor="amount">
-                {errors.amount?.message ? (
-                    <span className="text-radix-red11">
-                        {errors.amount.message}
-                    </span>
+                {errorMsg ? (
+                    <span className="text-radix-red11">{errorMsg}</span>
                 ) : (
                     "Amount"
                 )}
@@ -129,20 +121,27 @@ const OrderForm = () => {
             <div
                 className={clsx(
                     "h-14 pl-3 gap-2 bg-radix-slate5 w-full flex items-center mt-1 focus-within:ring-1 focus-within:ring-radix-blue9",
-                    errors.amount?.message && "ring !ring-radix-red9"
+                    errorMsg && "ring !ring-radix-red9"
                 )}
             >
                 <TextField
-                    error={errors.amount?.message}
+                    error={errorMsg}
                     className="block bg-transparent !border-transparent !ring-0 h-full w-full indent-12 text-right outline-none"
-                    type="number"
                     placeholder="0.00"
                     id="amount"
+                    onInput={() => resetFetcher()}
                     {...register("amount", {
                         required: "Amount is required",
                         min: {
                             value: 1,
                             message: "Amount must be greater than 0",
+                        },
+                        valueAsNumber: true,
+
+                        validate: (value) => {
+                            if (isNaN(value)) {
+                                return "Amount must be a number";
+                            }
                         },
                     })}
                     required
@@ -168,9 +167,9 @@ const OrderForm = () => {
             </div>
             <Button
                 type="submit"
-                color={errors.amount?.message ? "red" : "green"}
+                color={errorMsg ? "red" : "green"}
                 className="w-full !rounded-none h-14"
-                loading={loading}
+                loading={loading || isMutating}
             >
                 PLACE ORDER
             </Button>
