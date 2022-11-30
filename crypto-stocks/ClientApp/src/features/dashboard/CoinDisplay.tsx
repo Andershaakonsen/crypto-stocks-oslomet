@@ -14,21 +14,23 @@ const CoinDisplay = () => {
 
     return (
         <main>
-            <AdvancedChart
-                widgetProps={{
-                    autosize: true,
-                    symbol:
-                        selected === "USDT"
-                            ? "CRYPTOCAP:USDT"
-                            : selected === "USDC"
-                            ? "CRYPTOCAP:USDC"
-                            : `BINANCE:${selected}USDT`,
-                    theme: theme,
-                    hide_side_toolbar: true,
-                    timezone: "Europe/Amsterdam",
-                    allow_symbol_change: false,
-                }}
-            />
+            {selected ? (
+                <AdvancedChart
+                    widgetProps={{
+                        autosize: true,
+                        symbol:
+                            selected === "USDT"
+                                ? "CRYPTOCAP:USDT"
+                                : selected === "USDC"
+                                ? "CRYPTOCAP:USDC"
+                                : `BINANCE:${selected}USDT`,
+                        theme: theme,
+                        hide_side_toolbar: true,
+                        timezone: "Europe/Amsterdam",
+                        allow_symbol_change: false,
+                    }}
+                />
+            ) : null}
         </main>
     );
 };
